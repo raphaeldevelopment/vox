@@ -1,4 +1,4 @@
-import { createDependency } from "../dependency/createDependency.js";
+import { createEffect } from "../dependency/createEffect.js";
 import { VariableRegistry } from "./VariableRegistry.js";
 import { VOX_ATTR_SELECTOR } from "./consts.js";
 
@@ -31,7 +31,7 @@ export const checkAttributes = () => {
                 const variable = variableRegistry.get(variableName);
 
                 node.setAttribute(attrName, `${variable}`);
-                createDependency(() => {
+                createEffect(() => {
                     node.setAttribute(attrName, `${variable}`);
                 }, [variable])
             }

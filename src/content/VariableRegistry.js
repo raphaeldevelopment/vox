@@ -60,7 +60,7 @@ export class VariableRegistry {
      * @returns {VariableRegistry}
      */
     static getInstance() {
-        if (!VariableRegistry._instance) {
+        if (!VariableRegistry.#instance) {
             VariableRegistry.#instance = new VariableRegistry();
         }
         return VariableRegistry.#instance;

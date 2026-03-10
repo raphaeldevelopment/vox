@@ -1,9 +1,9 @@
-import { createDependency } from "../dependency/createDependency.js";
+import { createEffect } from "../dependency/createEffect.js";
 import { VariableRegistry } from "./VariableRegistry.js";
 import { VOX_ATTR_VALUE_SELECTOR, VOX_ATTR_SET_VALUE_SELECTOR } from "./consts.js";
 
 /**
- * Initialize the variables on DOM elements
+ * Initialize the value on an input element
  */
 export const checkValue = () => {
     const variableRegistry = VariableRegistry.getInstance();
@@ -17,7 +17,7 @@ export const checkValue = () => {
             const variable = variableRegistry.get(variableName);
 
             node.value = `${variable}`;
-            createDependency(() => {
+            createEffect(() => {
                 console.log("here");
                 node.value = `${variable}`;
             }, [variable]);

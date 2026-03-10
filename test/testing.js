@@ -1,6 +1,6 @@
-import { createDependency } from "./dependency/index.js";
-import { createVariable } from "./variables/index.js";
-import { voxMain, VariableRegistry } from "./content/index.js";
+import { createEffect } from "../src/dependency/index.js";
+import { createVariable } from "../src/variables/index.js";
+import { voxMain, VariableRegistry } from "../src/content/index.js";
 
 
 const [x, setX] = createVariable(0);
@@ -12,7 +12,7 @@ variableRegistry.set("test", y);
 variableRegistry.set("inpt", inpt);
 variableRegistry.set("setInpt", setInpt);
 
-createDependency(() => {
+createEffect(() => {
     if ((x / 10) % 3 === 0) {
         setY(x * 2);
     }

@@ -1,1 +1,1 @@
-export * from "./createDependency.js";
+export * from "./createEffect.js";
