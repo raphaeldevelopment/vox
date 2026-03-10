@@ -22,11 +22,9 @@ export const checkAttributes = () => {
                 name: attr.name,
                 value: attr.value
             }));
-        console.log(nodeAttributes);
         nodeAttributes.forEach(attr => {
             const attrName = attr.name.replace(VOX_ATTR_SELECTOR, "");
             const variableName = attr.value;
-            console.log(variableName, variableRegistry.has(variableName));
             if (variableRegistry.has(variableName)) {
                 const variable = variableRegistry.get(variableName);
 

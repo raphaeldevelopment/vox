@@ -28,7 +28,7 @@ const getValue = (variable, parsedVariableName) => {
     if (Number.isInteger(index)) {
         return `${variable.getValue()[index]}`;
     } else if (key) {
-        return `${variable.getValue().key}`;
+        return `${variable.getValue()[key]}`;
     } else {
         return `${variable}`;
     }

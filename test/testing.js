@@ -25,6 +25,9 @@ createEffect(() => {
     }
 
     console.log(x); 
+    if (x == 40) {
+        setArr([]);
+    }
     if (x == 90) {
         console.log("acum");
         setBool(true);

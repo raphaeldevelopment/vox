@@ -24,7 +24,6 @@ export const checkValue = () => {
 
             if (callbackRegistry.has(variableName)) {
                 const callback = callbackRegistry.get(variableName);
-                console.log(callback);
                 node.addEventListener("input", (e) => {
                     callback(e.target.value);
                 });

@@ -13,7 +13,7 @@ const parseRule = rule => {
     }
 }
 
-const updateAttributes = (node, variableName, partName, index) => {
+const updateAttributes = (node, variableName, partName) => {
     const templateAttrs = [...node.attributes].filter(attr => attr.value === partName);
     templateAttrs.forEach(attr => {
         node.setAttribute(attr.name, variableName);
@@ -34,17 +34,24 @@ const replaceWith = (node, variable) => {
 
     const nodes = values.map((value, index) => {
         const newNode = node.cloneNode(true);
-        console.log(node);
         updateAttributes(newNode, `${variableName}.[${index}]`, partName);
         newNode.removeAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
         return newNode;
     })
-    node.replaceWith(...nodes);
+    if (nodes.length > 0) {
+        node.replaceWith(...nodes);
+    } else {        
+        node.style.display = 'none';
+    }
 
     return nodes;
 }
 
 const undoReplaceWith = (node, nodes) => {
+    if (!nodes[0]) {
+        node.style.display = 'block';
+        return;
+    }
     nodes[0].replaceWith(node);
 
     for (let i = 1; i < nodes.length; i++) {
@@ -68,9 +75,12 @@ export const checkForEach = (voxRestart) => {
             let nodes = replaceWith(node, variable);
 
             createEffect(() => {
+                console.log(variable);
                 undoReplaceWith(node, nodes);
                 nodes = replaceWith(node, variable);
-                voxRestart(nodes[0].parentElement)
+                if (nodes.length > 0) {
+                    voxRestart(nodes[0].parentElement)
+                }
             }, [variable])
         }
     })
