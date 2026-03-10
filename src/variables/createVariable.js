@@ -1,4 +1,5 @@
-import {Variable} from "./Variable.js";
+import {Variable} from "../utils/Variable.js";
+import {Callback} from "../utils/Callback.js";
 
 /**
  * Create a fresh variable
@@ -32,5 +33,5 @@ export const createVariable = initialValue => {
         events.forEach(event => event(newValue, oldValue));
     }
 
-    return [variable, setVariable];
+    return [variable, new Callback(setVariable)];
 }

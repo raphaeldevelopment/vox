@@ -1,5 +1,5 @@
-import { createEffect } from "../dependency/createEffect.js";
-import { VariableRegistry } from "./VariableRegistry.js";
+import { createEffect } from "../effects/createEffect.js";
+import { VariableRegistry } from "../utils/VariableRegistry.js";
 import { VOX_ATTR_VARIABLE_SELECTOR } from "./consts.js";
 
 const parseVariableName = variableName => {

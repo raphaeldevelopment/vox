@@ -1,5 +1,6 @@
-import { createEffect } from "../dependency/createEffect.js";
-import { VariableRegistry } from "./VariableRegistry.js";
+import { createEffect } from "../effects/createEffect.js";
+import { CallbackRegistry } from "../utils/CallbackRegistry.js";
+import { VariableRegistry } from "../utils/VariableRegistry.js";
 import { VOX_ATTR_VALUE_SELECTOR, VOX_ATTR_SET_VALUE_SELECTOR } from "./consts.js";
 
 /**
@@ -7,11 +8,11 @@ import { VOX_ATTR_VALUE_SELECTOR, VOX_ATTR_SET_VALUE_SELECTOR } from "./consts.j
  */
 export const checkValue = () => {
     const variableRegistry = VariableRegistry.getInstance();
+    const callbackRegistry = CallbackRegistry.getInstance();
     const variableNodes = document.querySelectorAll(`[${VOX_ATTR_VALUE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
         const variableName = node.getAttribute(VOX_ATTR_VALUE_SELECTOR);
-        const setVariableName = node.getAttribute(VOX_ATTR_SET_VALUE_SELECTOR);
 
         if (variableRegistry.has(variableName)) {
             const variable = variableRegistry.get(variableName);
@@ -21,11 +22,11 @@ export const checkValue = () => {
                 node.value = `${variable}`;
             }, [variable]);
 
-            if (variableRegistry.has(setVariableName)) {
-                const setVariable = variableRegistry.get(setVariableName);
-                
+            if (callbackRegistry.has(variableName)) {
+                const callback = callbackRegistry.get(variableName);
+                console.log(callback);
                 node.addEventListener("input", (e) => {
-                    setVariable(e.target.value);
+                    callback(e.target.value);
                 });
             }
         }

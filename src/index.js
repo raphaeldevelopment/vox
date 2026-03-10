@@ -1,3 +1,3 @@
 export * from "./variables";
-export * from "./dependency";
+export * from "./effects";
 export * from "./content";

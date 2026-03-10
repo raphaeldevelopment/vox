@@ -1,2 +1,2 @@
 export * from "./voxMain.js";
-export * from "./VariableRegistry.js";
+export * from "../utils/VariableRegistry.js";

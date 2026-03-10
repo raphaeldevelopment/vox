@@ -1,6 +1,8 @@
-import { createEffect } from "../src/dependency/index.js";
+import { createEffect } from "../src/effects/index.js";
 import { createVariable } from "../src/variables/index.js";
 import { voxMain, VariableRegistry } from "../src/content/index.js";
+import { CallbackRegistry } from "../src/utils/CallbackRegistry.js";
+import { Callback } from "../src/utils/Callback.js";
 
 
 const [x, setX] = createVariable(0);
@@ -9,10 +11,11 @@ const [bool, setBool] = createVariable(false);
 const [inpt, setInpt] = createVariable(15);
 const [arr, setArr] = createVariable([1, "arr el", 3]);
 const variableRegistry = VariableRegistry.getInstance();
+const callbackRegistry = CallbackRegistry.getInstance();
 variableRegistry.set("testing", x);
 variableRegistry.set("test", y);
 variableRegistry.set("inpt", inpt);
-variableRegistry.set("setInpt", setInpt);
+callbackRegistry.set("inpt", setInpt);
 variableRegistry.set("bool", bool);
 variableRegistry.set("arr", arr);
 
