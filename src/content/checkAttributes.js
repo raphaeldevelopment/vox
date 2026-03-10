@@ -17,7 +17,7 @@ export const checkAttributes = () => {
 
     variableNodes.forEach(node => {
         const nodeAttributes = Array.from(node.attributes)
-            .filter(attr => attr.name.startsWith("vox-attr-"))
+            .filter(attr => attr.name.startsWith(VOX_ATTR_SELECTOR))
             .map(attr => ({
                 name: attr.name,
                 value: attr.value

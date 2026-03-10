@@ -3,12 +3,14 @@ import { checkVariables } from "./checkVariables.js";
 import { checkAttributes } from "./checkAttributes.js";
 import { checkValue } from "./checkValue.js";
 import { checkTemplates } from "./checkTemplates.js";
+import { addEvents } from "./addEvents.js";
 import { checkIf } from "./checkIf.js";
 
 const voxRestart = (parentNode) => {
     checkVariables(parentNode);
     checkAttributes(parentNode);
     checkValue(parentNode);
+    addEvents(parentNode);
     checkIf(parentNode);
 }
 /**
@@ -17,8 +19,5 @@ const voxRestart = (parentNode) => {
 export const voxMain = async () => {
     await checkTemplates();
     checkForEach(voxRestart);
-    checkVariables();
-    checkAttributes();
-    checkValue();
-    checkIf();
+    voxRestart();
 }

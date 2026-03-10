@@ -10,14 +10,21 @@ const [y, setY] = createVariable("t");
 const [bool, setBool] = createVariable(false);
 const [inpt, setInpt] = createVariable(15);
 const [arr, setArr] = createVariable([1, "arr el", 3]);
+const [index, setIndex] = createVariable(0);
 const variableRegistry = VariableRegistry.getInstance();
 const callbackRegistry = CallbackRegistry.getInstance();
 variableRegistry.set("testing", x);
 variableRegistry.set("test", y);
 variableRegistry.set("inpt", inpt);
-callbackRegistry.set("inpt", setInpt);
 variableRegistry.set("bool", bool);
 variableRegistry.set("arr", arr);
+variableRegistry.set("index", index);
+
+
+callbackRegistry.set("inpt", setInpt);
+callbackRegistry.set("buttonClick", () => {
+    setIndex(index + 1);
+});
 
 createEffect(() => {
     if ((x / 10) % 3 === 0) {
