@@ -2,22 +2,54 @@ import { createEffect } from "../dependency/createEffect.js";
 import { VariableRegistry } from "./VariableRegistry.js";
 import { VOX_ATTR_VARIABLE_SELECTOR } from "./consts.js";
 
+const parseVariableName = variableName => {
+    const variableParts = variableName.split(".");
+
+    const parsedVariable = {
+        variableName: variableParts[0]
+    }
+
+    if (variableParts[1]) {
+        const isArrayElement = variableParts[1].match(/^\[(\d+)\]$/);
+        const index = isArrayElement ? Number(isArrayElement[1]) : null;
+        if (Number.isInteger(index)) {
+            parsedVariable.index = index
+        } else {
+            parsedVariable.key = variableParts[1];
+        }
+    }
+
+    return parsedVariable;
+}
+
+const getValue = (variable, parsedVariableName) => {
+    const { index, key } = parsedVariableName;
+
+    if (Number.isInteger(index)) {
+        return `${variable.getValue()[index]}`;
+    } else if (key) {
+        return `${variable.getValue().key}`;
+    } else {
+        return `${variable}`;
+    }
+}
+
 /**
  * Initialize the variables on DOM elements
  */
-export const checkVariables = () => {
+export const checkVariables = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
-    const variableNodes = document.querySelectorAll(`[${VOX_ATTR_VARIABLE_SELECTOR}]`);
+    const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_VARIABLE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
-        const variableName = node.getAttribute(VOX_ATTR_VARIABLE_SELECTOR);
+        const parsedVariableName = parseVariableName(node.getAttribute(VOX_ATTR_VARIABLE_SELECTOR));
+        const { variableName } = parsedVariableName;
 
         if (variableRegistry.has(variableName)) {
             const variable = variableRegistry.get(variableName);
-
-            node.innerHTML = `${variable}`;
+            node.innerHTML = getValue(variable, parsedVariableName);
             createEffect(() => {
-                node.innerHTML = `${variable}`;
+                node.innerHTML = getValue(variable, parsedVariableName);
             }, [variable])
         }
     })

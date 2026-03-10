@@ -38,7 +38,6 @@ export const checkIf = () => {
             }
 
             createEffect(() => {
-                console.log(variable.getValue());
                 if (variable.getValue()) {
                     if (cache) {
                         node.appendChild(cache);

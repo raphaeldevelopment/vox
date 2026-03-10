@@ -7,12 +7,14 @@ const [x, setX] = createVariable(0);
 const [y, setY] = createVariable("t");
 const [bool, setBool] = createVariable(false);
 const [inpt, setInpt] = createVariable(15);
+const [arr, setArr] = createVariable([1, "arr el", 3]);
 const variableRegistry = VariableRegistry.getInstance();
 variableRegistry.set("testing", x);
 variableRegistry.set("test", y);
 variableRegistry.set("inpt", inpt);
 variableRegistry.set("setInpt", setInpt);
 variableRegistry.set("bool", bool);
+variableRegistry.set("arr", arr);
 
 createEffect(() => {
     if ((x / 10) % 3 === 0) {
@@ -23,6 +25,7 @@ createEffect(() => {
     if (x == 90) {
         console.log("acum");
         setBool(true);
+        setArr([1, 2, 3, 4]);
     }
 }, [x]);
 
