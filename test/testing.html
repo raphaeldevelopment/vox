@@ -3,27 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test</title>
+  <title>Vox Testing</title>
 </head>
 <body>
-    <div vox-template="/test/template.html"></div>
-    <div vox-template="/test/template.html"></div>
-    <div vox-template="/test/template.html"></div>
-  <h1>Pagina de test</h1>
+  <h1>Vox Test</h1>
 
-  <div vox-if="bool">
-    <div vox-variable="arr.[1]" vox-attr-y="test" vox-attr-x="testing"></div>
-    <div vox-variable="inpt" vox-attr-x="testing"></div>
-    <form>
-        <input name="testul" vox-value="inpt" />
-    </form>
-  </div>
+  <section>
+    <h2>Reactive variable</h2>
+    <p>Nume: <span vox-variable="name"></span></p>
+  </section>
 
-  <div vox-variable="index" vox-on:click="buttonClick"></div>
+  <section>
+    <h2>Input binding</h2>
+    <input type="text" vox-value="name" vox-set-value="setName" placeholder="Scrie un nume" />
+  </section>
 
-  <ul>
-    <li vox-for-each="el in arr">Elementul <span  vox-variable="el"></span></li>
-  </ul>
+  <section>
+    <h2>Conditional rendering</h2>
+    <button vox-on:click="toggleVisible">Toggle visible</button>
+
+    <div vox-if="isVisible">
+      <p>Acest text apare doar când <strong>isVisible</strong> este true.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>List rendering</h2>
+    <button vox-on:click="addItem">Add item</button>
+
+    <ul>
+      <li vox-for-each="item in items">
+        <span vox-variable="item"></span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Template</h2>
+    <div vox-template="./template.html"></div>
+  </section>
+
   <script type="module" src="./testing.js"></script>
 </body>
 </html>
