@@ -15,7 +15,7 @@ export class VariableRegistry {
          */
         this.variables = new Map();
 
-        VariableRegistry._instance = this;
+        VariableRegistry.#instance = this;
     }
 
     /**

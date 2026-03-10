@@ -2,18 +2,26 @@ import { createEffect } from "../dependency/createEffect.js";
 import { VariableRegistry } from "./VariableRegistry.js";
 import { VOX_ATTR_TEMPLATE_SELECTOR } from "./consts.js";
 
+const cacheTemplate = new Map();
 /**
- * Initialize the value on an input element
+ * Initialize the loaded templates
  */
 export const checkTemplates = async () => {
     const variableRegistry = VariableRegistry.getInstance();
     const variableNodes = document.querySelectorAll(`[${VOX_ATTR_TEMPLATE_SELECTOR}]`);
 
-    variableNodes.forEach(async node => {
+    for (const node of variableNodes) {
         const templatePath = node.getAttribute(VOX_ATTR_TEMPLATE_SELECTOR);
+        let response, template;
 
-        const response = await fetch(templatePath);
-        const template = await response.text();
+        if (cacheTemplate[templatePath]) {
+            template = cacheTemplate[templatePath];
+        } else {
+            response = await fetch(templatePath);
+            template = await response.text();
+            cacheTemplate[templatePath] = template;
+        }
+
         const variables = [];
 
         const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
@@ -41,6 +49,6 @@ export const checkTemplates = async () => {
 
             node.innerHTML = parsedTemplate;
         }, variables)
-    })
+    };
 
 }
