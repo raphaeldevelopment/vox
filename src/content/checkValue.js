@@ -18,14 +18,13 @@ export const checkValue = () => {
 
             node.value = `${variable}`;
             createEffect(() => {
-                console.log("here");
                 node.value = `${variable}`;
             }, [variable]);
 
             if (variableRegistry.has(setVariableName)) {
                 const setVariable = variableRegistry.get(setVariableName);
+                
                 node.addEventListener("input", (e) => {
-                    console.log(variable);
                     setVariable(e.target.value);
                 });
             }

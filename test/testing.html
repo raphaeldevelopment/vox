@@ -11,11 +11,13 @@
     <div vox-template="/test/template.html"></div>
   <h1>Pagina de test</h1>
 
-  <div vox-variable="testing" vox-attr-y="test" vox-attr-x="testing"></div>
-  <div vox-variable="inpt" vox-attr-x="testing"></div>
-  <form>
-    <input name="testul" vox-value="inpt" vox-set-value="setInpt" />
-  </form>
+  <div vox-if="bool">
+    <div vox-variable="testing" vox-attr-y="test" vox-attr-x="testing"></div>
+    <div vox-variable="inpt" vox-attr-x="testing"></div>
+    <form>
+        <input name="testul" vox-value="inpt" vox-set-value="setInpt" />
+    </form>
+  </div>
   <script type="module" src="./testing.js"></script>
 </body>
 </html>
