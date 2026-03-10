@@ -75,7 +75,6 @@ export const checkForEach = (voxRestart) => {
             let nodes = replaceWith(node, variable);
 
             createEffect(() => {
-                console.log(variable);
                 undoReplaceWith(node, nodes);
                 nodes = replaceWith(node, variable);
                 if (nodes.length > 0) {

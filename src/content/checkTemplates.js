@@ -14,12 +14,12 @@ export const checkTemplates = async () => {
         const templatePath = node.getAttribute(VOX_ATTR_TEMPLATE_SELECTOR);
         let response, template;
 
-        if (cacheTemplate[templatePath]) {
-            template = cacheTemplate[templatePath];
+        if (cacheTemplate.has(templatePath)) {
+            template = cacheTemplate.get(templatePath);
         } else {
             response = await fetch(templatePath);
             template = await response.text();
-            cacheTemplate[templatePath] = template;
+            cacheTemplate.set(templatePath, template);
         }
 
         const variables = [];
@@ -37,6 +37,7 @@ export const checkTemplates = async () => {
         node.innerHTML = parsedTemplate;
 
         createEffect(() => {
+            variables.length = 0;
             const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
                 key = key.trim();
                 if (variableRegistry.has(key)) {
