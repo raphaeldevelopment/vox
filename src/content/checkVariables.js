@@ -1,6 +1,7 @@
 import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../utils/VariableRegistry.js";
 import { VOX_ATTR_VARIABLE_SELECTOR } from "./consts.js";
+import { guardNode } from "../utils/guardNode.js";
 
 const parseVariableName = variableName => {
     const variableParts = variableName.split(".");
@@ -45,18 +46,30 @@ export const checkVariables = (parentNode = document) => {
         const parsedVariableName = parseVariableName(node.getAttribute(VOX_ATTR_VARIABLE_SELECTOR));
         const { variableName } = parsedVariableName;
 
-        if (variableRegistry.has(variableName)) {
-            const variable = variableRegistry.get(variableName);
-            node.innerHTML = getValue(variable, parsedVariableName);
-            const cleanup = createEffect(() => {
-                if (!node.isConnected) {
-                    cleanup();
-                    return;
-                }
-                
-                node.innerHTML = getValue(variable, parsedVariableName);
-            }, [variable])
+        if (!variableRegistry.has(variableName)) {
+            return;
         }
+        const variable = variableRegistry.get(variableName);
+        let cleanup = () => {};
+        const guard = (init, cleanup) => guardNode(node, `voxVariableSet`, variableName, init, cleanup);
+
+        const logic = init => {
+            try {
+                guard(init, cleanup);
+
+                node.innerHTML = getValue(variable, parsedVariableName);               
+                if (init) {     
+                    cleanup = createEffect(() => {
+                        logic(false);
+                    }, [variable]);
+                }
+            } catch (err) {
+                cleanup();
+                console.warn(err);
+            }
+        }
+
+        logic(true);  
     })
 
 }

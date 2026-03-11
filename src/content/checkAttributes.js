@@ -37,7 +37,13 @@ export const checkAttributes = (parentNode = document) => {
             const logic = init => {
                 try {
                     guard(init, cleanup);
-                    node.setAttribute(attrName, `${variable}`);
+                    node.setAttribute(attrName, `${variable}`);  
+
+                    if (init) {     
+                        cleanup = createEffect(() => {
+                            logic(false);
+                        }, [variable]);
+                    }
                 } catch (err) {
                     cleanup();
                     console.warn(err);
@@ -45,9 +51,6 @@ export const checkAttributes = (parentNode = document) => {
             }
             
             logic(true);
-            cleanup = createEffect(() => {
-                logic(false);
-            }, [variable])
         })
     })
 }

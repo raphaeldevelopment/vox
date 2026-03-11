@@ -1,6 +1,7 @@
 import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../utils/VariableRegistry.js";
 import { VOX_ATTR_TEMPLATE_SELECTOR } from "./consts.js";
+import { guardNode } from "../utils/guardNode.js";
 
 const cacheTemplate = new Map();
 /**
@@ -13,7 +14,9 @@ export const checkTemplates = async () => {
     for (const node of variableNodes) {
         const templatePath = node.getAttribute(VOX_ATTR_TEMPLATE_SELECTOR);
         let response, template;
-
+        let cleanup = () => {};
+        const guard = (init, cleanup) => guardNode(node, `voxTemplateSet`, templatePath, init, cleanup);   
+        let variables = [];
         if (cacheTemplate.has(templatePath)) {
             template = cacheTemplate.get(templatePath);
         } else {
@@ -22,39 +25,34 @@ export const checkTemplates = async () => {
             cacheTemplate.set(templatePath, template);
         }
 
-        const variables = [];
+        const logic = init => {
+            try {
+                guard(init, cleanup);    
+                variables = []
 
-        const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
-            key = key.trim();
-            if (variableRegistry.has(key)) {
-                const currentVariable = variableRegistry.get(key);
-                variables.push(currentVariable);
-                return currentVariable;
-            }
-            return '';
-        });
-
-        node.innerHTML = parsedTemplate;
-
-        const cleanup = createEffect(() => {
-            if (!node.isConnected) {
-                cleanup();
-                return;
-            }
-                
-            variables.length = 0;
-            const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
-                key = key.trim();
-                if (variableRegistry.has(key)) {
+                const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
+                    key = key.trim();
+                    if (!variableRegistry.has(key)) {
+                        return '';
+                    }
                     const currentVariable = variableRegistry.get(key);
                     variables.push(currentVariable);
                     return currentVariable;
-                }
-                return '';
-            });
+                });
+                node.innerHTML = parsedTemplate;   
 
-            node.innerHTML = parsedTemplate;
-        }, variables)
+                if (init) {     
+                    cleanup = createEffect(() => {
+                        logic(false);
+                    }, variables);
+                }
+            } catch (err) {
+                cleanup();
+                console.warn(err);
+            }
+        }
+
+        logic(true);
     };
 
 }

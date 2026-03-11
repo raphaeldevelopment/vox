@@ -27,7 +27,7 @@ export const checkIf = (parentNode = document) => {
         const variable = variableRegistry.get(variableName);
         const guard = (init, cleanup) => guardNode(node, `voxIfSet`, variableName, init, cleanup);        
 
-        const ifLogic = init => {
+        const logic = init => {
             try {
                 guard(init, cleanup);
                 if (variable.getValue()) {
@@ -39,6 +39,12 @@ export const checkIf = (parentNode = document) => {
                     if (!cache) {
                         cache = cacheChild(node);
                     }
+                }    
+
+                if (init) {     
+                    cleanup = createEffect(() => {
+                        logic(false);
+                    }, [variable]);
                 }
             } catch (err) {
                 cleanup();
@@ -48,10 +54,7 @@ export const checkIf = (parentNode = document) => {
             return cache;
         }
 
-        ifLogic(true);
-        cleanup = createEffect(() => {
-            ifLogic(false);
-        }, [variable])
+        logic(true);
     })
 
 }

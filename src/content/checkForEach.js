@@ -38,11 +38,15 @@ const replaceWith = (node, variable, cache) => {
         if (cache.has(value)) {
             newNode = cache.get(value);
         } else {
-            console.log(`${value} - new node`);
             newNode = node.cloneNode(true);
             newNode.removeAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
             cache.set(value, newNode);
         }
+        Object.keys(newNode.dataset).forEach(key =>{
+            if (key.startsWith("vox")) {
+                delete newNode.dataset[key];
+            }
+        })
         updateAttributes(newNode, `${variableName}.[${index}]`, partName);
         return newNode;
     })
@@ -78,7 +82,7 @@ export const checkForEach = (voxRestart) => {
         const parsedRule = parseRule(rule);
         const container = node.parentNode;
         const { variableName} = parsedRule;
-            let cleanup = () => {};
+        let cleanup = () => {};
 
         if (!variableRegistry.has(variableName)) {
             return;
@@ -100,6 +104,12 @@ export const checkForEach = (voxRestart) => {
                     if (nodes.length > 0) {
                         voxRestart(nodes[0].parentElement)
                     }
+                }  
+
+                if (init) {     
+                    cleanup = createEffect(() => {
+                        logic(false);
+                    }, [variable]);
                 }
             } catch (err) {
                 cleanup();
@@ -108,9 +118,6 @@ export const checkForEach = (voxRestart) => {
         }
 
         logic(true);
-        cleanup = createEffect(() => {            
-            logic(false);
-        }, [variable])
     })
 
 }
