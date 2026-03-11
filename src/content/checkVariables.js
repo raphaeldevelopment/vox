@@ -65,10 +65,6 @@ export const checkVariables = (parentNode = document) => {
             try {
                 guard(init, cleanup);
 
-                if (type === "state") {
-                    console.log(state.get(variableName), key);
-                }
-
                 node.innerHTML = type === "state" ? variable : getVariableValue(variable, parsedVariableName);               
                 if (init) {     
                     cleanup = createEffect(() => {

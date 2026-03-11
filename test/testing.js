@@ -1,4 +1,4 @@
-import { voxMain, createVariable, createEffect, State, VariableRegistry, CallbackRegistry } from "../dist/vox.esm.js"
+import { voxMain, createVariable, createEffect, State, VariableRegistry, CallbackRegistry, voxDebug } from "../dist/vox.esm.js"
 
 const variableRegistry = VariableRegistry.getInstance();
 const callbackRegistry = CallbackRegistry.getInstance();
@@ -60,3 +60,5 @@ console.log(state.get());
 console.log("=== END TEST STATE ===");
 
 voxMain();
+
+voxDebug();

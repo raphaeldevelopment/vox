@@ -1,4 +1,5 @@
 import path from "path";
+import webpack from "webpack";
 
 export default [
     {
@@ -15,7 +16,13 @@ export default [
         },
         experiments: {
             outputModule: true
-        }
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                __VOX_DEBUG__: JSON.stringify(process.env.VOX_DEBUG === "true")
+            })
+        ],
+        watch: true
     },
     {
         name: "cjs",

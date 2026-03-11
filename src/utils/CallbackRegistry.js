@@ -8,7 +8,6 @@ export class CallbackRegistry {
         if (CallbackRegistry.#instance) {
             return CallbackRegistry.#instance;
         }
-
         /**
          * @private
          * @type {Map<string, Callback>}
