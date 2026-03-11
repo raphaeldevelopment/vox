@@ -6,6 +6,19 @@ It is designed as a small reactive engine for learning, experimenting, and build
 
 ---
 
+## Benchmark Notes
+
+Vox batches updates per animation frame.
+
+Local benchmark results:
+- 10,000 variable writes + flush: ~10.4ms
+- 1,000 effect registrations: ~11.1ms
+- 100 reactive DOM nodes updated through a single batched flush: ~11.1ms
+- 100 reactive DOM nodes updated unbatched across 100 frames: ~1111ms
+
+This shows that Vox performs best in its intended batched update model, where repeated writes are coalesced before DOM work is applied.
+---
+
 ## Features
 
 * Reactive variables
