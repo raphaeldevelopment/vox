@@ -27,7 +27,7 @@ export const createVariable = initialValue => {
         /** @type {T} */
         const oldValue = variable.getValue();
         const effectsStack = EffectsStack.getInstance();
-        if (oldValue === newValue) {
+        if (Object.is(oldValue, newValue)) {
             return;
         }
         variable.setValue(newValue);

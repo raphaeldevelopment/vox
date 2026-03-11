@@ -8,6 +8,7 @@ export class EffectsStack {
             return EffectsStack.#instance;
         }
 
+        EffectsStack.#instance = this;
         this.#effects = new Set();        
     }
 
@@ -22,13 +23,19 @@ export class EffectsStack {
             return;
         }
 
-        this.requestAnimationFrameID = requestAnimationFrame(() => {
-            const effectsToRun = [...this.#effects];
-            this.#effects.clear();
-            this.requestAnimationFrameID = 0;
+        this.requestAnimationFrameID = requestAnimationFrame(this.#flushEffects);
+    }
 
-            effectsToRun.forEach(effect => effect());
-        })
+    #flushEffects = () => {
+        const effectsToRun = [...this.#effects];
+        this.#effects.clear();
+        this.requestAnimationFrameID = 0;
+
+        effectsToRun.forEach(effect => effect());
+
+        if (this.#effects.size > 0) {
+            this.requestAnimationFrameID = requestAnimationFrame(this.#flushEffects);
+        }
     }
 
     
