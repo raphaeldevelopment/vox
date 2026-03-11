@@ -6,10 +6,10 @@ import { VOX_ATTR_VALUE_SELECTOR, VOX_ATTR_SET_VALUE_SELECTOR } from "./consts.j
 /**
  * Initialize the value on an input element
  */
-export const checkValue = () => {
+export const checkValue = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
     const callbackRegistry = CallbackRegistry.getInstance();
-    const variableNodes = document.querySelectorAll(`[${VOX_ATTR_VALUE_SELECTOR}]`);
+    const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_VALUE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
         const variableName = node.getAttribute(VOX_ATTR_VALUE_SELECTOR);

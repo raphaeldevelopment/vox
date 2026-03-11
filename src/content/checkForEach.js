@@ -1,6 +1,7 @@
 import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../utils/VariableRegistry.js";
 import { VOX_ATTR_FOR_EACH_SELECTOR } from "./consts.js";
+import { guardNode } from "../utils/guardNode.js";
 
 const parseRule = rule => {
     const parts = rule.split (" in ");
@@ -22,7 +23,7 @@ const updateAttributes = (node, variableName, partName) => {
     [...node.children].forEach(child => updateAttributes(child, variableName, partName));
 }
 
-const replaceWith = (node, variable) => {
+const replaceWith = (node, variable, cache) => {
     const rule = node.getAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
     const parsedRule = parseRule(rule);
     const { partName, variableName} = parsedRule;
@@ -33,9 +34,16 @@ const replaceWith = (node, variable) => {
     }
 
     const nodes = values.map((value, index) => {
-        const newNode = node.cloneNode(true);
+        let newNode = null;
+        if (cache.has(value)) {
+            newNode = cache.get(value);
+        } else {
+            console.log(`${value} - new node`);
+            newNode = node.cloneNode(true);
+            newNode.removeAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
+            cache.set(value, newNode);
+        }
         updateAttributes(newNode, `${variableName}.[${index}]`, partName);
-        newNode.removeAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
         return newNode;
     })
     if (nodes.length > 0) {
@@ -68,25 +76,41 @@ export const checkForEach = (voxRestart) => {
     variableNodes.forEach(node => {
         const rule = node.getAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
         const parsedRule = parseRule(rule);
+        const container = node.parentNode;
         const { variableName} = parsedRule;
+            let cleanup = () => {};
 
-        if (variableRegistry.has(variableName)) {
-            const variable = variableRegistry.get(variableName);
-            let nodes = replaceWith(node, variable);
-
-            const cleanup = createEffect(() => {
-                if (!node.isConnected) {
-                    cleanup();
-                    return;
-                }
-                
-                undoReplaceWith(node, nodes);
-                nodes = replaceWith(node, variable);
-                if (nodes.length > 0) {
-                    voxRestart(nodes[0].parentElement)
-                }
-            }, [variable])
+        if (!variableRegistry.has(variableName)) {
+            return;
         }
+        const guard = (init, cleanup) => guardNode(container, `voxForEachSet`, variableName, init, cleanup);        
+        const variable = variableRegistry.get(variableName);
+        let nodes = null;
+        const cache = new Map();
+
+        const logic = init => {
+            try {
+                guard(init, cleanup);    
+                if (!init) {                    
+                    undoReplaceWith(node, nodes);
+                }            
+                nodes = replaceWith(node, variable, cache);
+                
+                if (!init) { 
+                    if (nodes.length > 0) {
+                        voxRestart(nodes[0].parentElement)
+                    }
+                }
+            } catch (err) {
+                cleanup();
+                console.warn(err);
+            }
+        }
+
+        logic(true);
+        cleanup = createEffect(() => {            
+            logic(false);
+        }, [variable])
     })
 
 }

@@ -16,9 +16,9 @@ const cacheChild = node => {
 /**
  * Initialize the variables on DOM elements
  */
-export const checkIf = () => {
+export const checkIf = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
-    const variableNodes = document.querySelectorAll(`[${VOX_ATTR_IF_SELECTOR}]`);
+    const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_IF_SELECTOR}]`);
 
     variableNodes.forEach(node => {
         const variableName = node.getAttribute(VOX_ATTR_IF_SELECTOR);

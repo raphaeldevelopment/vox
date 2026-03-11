@@ -5,9 +5,9 @@ import { VOX_EVENT_SELECTOR } from "./consts.js";
  * Update attribute based on variables
  * attr must be set as vox-attr-${attr-name}=${variable}
  */
-export const addEvents = () => {
+export const addEvents = (parentNode = document) => {
     const callbackRegistry = CallbackRegistry.getInstance();
-    const variableNodes = Array.from(document.querySelectorAll("*"))
+    const variableNodes = Array.from(parentNode.querySelectorAll("*"))
         .filter(el =>
             Array.from(el.attributes).some(attr =>
                 attr.name.startsWith(VOX_EVENT_SELECTOR)

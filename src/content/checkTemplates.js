@@ -35,10 +35,11 @@ export const checkTemplates = async () => {
         });
 
         node.innerHTML = parsedTemplate;
-        
+
         const cleanup = createEffect(() => {
             if (!node.isConnected) {
                 cleanup();
+                return;
             }
                 
             variables.length = 0;
