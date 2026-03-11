@@ -50,7 +50,7 @@ When the variable changes, the DOM updates automatically.
 ## Input Binding
 
 ```html
-<input vox-value="count" vox-set-value="setCount">
+<input vox-value="count">
 ```
 
 ---
