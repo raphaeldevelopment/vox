@@ -2,11 +2,29 @@ import { createVariable } from "../variables/createVariable.js";
 import { createEffect } from "../effects/createEffect.js";
 import { EffectsStack } from "../utils/EffectsStack.js";
 
+class FakeStorage {
+    constructor() {
+        this.store = {};
+    }
+
+    getItem(key) {
+        return this.store[key] ?? null;
+    }
+
+    setItem(key, value) {
+        this.store[key] = value;
+    }
+
+    clear() {
+        this.store = {};
+    }
+}
+
 export class State {
     static #instance = null;
 
     #root = new Map();
-    #storage = localStorage;
+    #storage = typeof localStorage !== "undefined" ? localStorage : new FakeStorage();
     #effectsStack = null;
 
     constructor() {
@@ -133,5 +151,9 @@ export class State {
         }
 
         return State.#instance;
+    }
+
+    static __resetForTests() {
+        State.#instance = null;
     }
 }

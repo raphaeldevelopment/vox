@@ -36,7 +36,7 @@ export const createVariable = initialValue => {
         }
         variable.setValue(newValue);
 
-        events.forEach(event => effectsStack.addEffect(event));
+        events.forEach(event => effectsStack.addEffect(event.bind(event, newValue, oldValue)));
     }
 
     return [variable, new Callback(setVariable)];

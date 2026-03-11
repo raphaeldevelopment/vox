@@ -37,8 +37,8 @@ state.addVariable("user", "age", 25);
 
 console.log(state.get("user"));
 
-createEffect(() => {
-    console.log("FROM STATE, BOSS");
+createEffect((...args) => {
+    console.log("FROM STATE, BOSS", args);
 }, [state.get("user").name])
 console.log(state.get("user").name);
 console.log("\n3. Read values");
