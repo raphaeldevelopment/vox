@@ -1,8 +1,4 @@
-import { createVariable } from "../src/variables/index.js";
-import { voxMain, VariableRegistry } from "../src/content/index.js";
-import { CallbackRegistry } from "../src/utils/CallbackRegistry.js";
-import { State } from "../src/state/State.js"
-import { createEffect } from "../src/effects/createEffect.js";
+import { voxMain, createVariable, createEffect, State, VariableRegistry, CallbackRegistry } from "../dist/vox.esm.js"
 
 const variableRegistry = VariableRegistry.getInstance();
 const callbackRegistry = CallbackRegistry.getInstance();
@@ -44,7 +40,7 @@ console.log(state.get("user"));
 createEffect(() => {
     console.log("FROM STATE, BOSS");
 }, [state.get("user").name])
-
+console.log(state.get("user").name);
 console.log("\n3. Read values");
 console.log("name:", state.get("user").name);
 console.log("age:", state.get("user").age);

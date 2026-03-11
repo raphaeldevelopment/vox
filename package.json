@@ -1,16 +1,28 @@
 {
-  "name": "vox",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "npx jsdoc -c jsdoc.json"
+  "name": "voxjs",
+  "version": "0.1.0",
+  "description": "Lightweight experimental reactive JavaScript library",
+  "type": "module",
+  "main": "./dist/vox.cjs",
+  "module": "./dist/vox.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vox.esm.js",
+      "require": "./dist/vox.cjs"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "webpack",
+    "build:dev": "webpack --mode development",
+    "watch": "webpack --watch --mode development"
+  },
   "devDependencies": {
-    "jsdoc": "^4.0.5"
+    "jsdoc": "^4.0.5",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^5.1.4"
   }
 }
