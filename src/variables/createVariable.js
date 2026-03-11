@@ -1,5 +1,6 @@
 import {Variable} from "../utils/Variable.js";
 import {Callback} from "../utils/Callback.js";
+import {EffectsStack} from "../utils/EffectsStack.js";
 
 /**
  * Create a fresh variable
@@ -25,12 +26,13 @@ export const createVariable = initialValue => {
     const setVariable = newValue => {
         /** @type {T} */
         const oldValue = variable.getValue();
+        const effectsStack = EffectsStack.getInstance();
         if (oldValue === newValue) {
             return;
         }
         variable.setValue(newValue);
 
-        events.forEach(event => event(newValue, oldValue));
+        events.forEach(event => effectsStack.addEffect(event));
     }
 
     return [variable, new Callback(setVariable)];
