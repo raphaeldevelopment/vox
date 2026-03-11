@@ -1,28 +1,43 @@
 # Vox
 
-Vox is a lightweight experimental reactive JavaScript library built to explore how modern frontend reactivity works internally.
+**Vox** is a lightweight experimental reactive JavaScript library focused on simple DOM-driven reactivity, tiny bundle size, and minimal runtime abstractions.
 
-The project focuses on a minimal runtime that connects **state**, **effects**, and **DOM bindings** through simple declarative `vox-*` attributes.
+It is designed as a small reactive engine for learning, experimenting, and building lightweight interfaces without the overhead of a full framework.
 
 ---
 
 ## Features
 
 * Reactive variables
-* Effects / dependencies
-* Conditional rendering (`vox-if`)
-* List rendering (`vox-for-each`)
-* Template loading (`vox-template`)
-* Attribute bindings (`vox-attr-*`)
-* Input bindings
+* Reactive effects
+* Lightweight DOM bindings
+* Conditional rendering
+* List rendering
+* Attribute bindings
 * Event bindings
+* Persistent state support
+* Tiny bundle size (~3 KB gzipped target)
+
+---
+
+## Philosophy
+
+Vox keeps the runtime small and explicit:
+
+* No virtual DOM
+* No compiler step required for usage
+* DOM-first architecture
+* Small API surface
+* Easy to inspect internals
+
+The goal is not to compete with large frameworks, but to provide a clean experimental playground for reactive architecture.
 
 ---
 
 ## Installation
 
 ```bash
-npm install
+npm install voxjs
 ```
 
 ---
@@ -30,105 +45,92 @@ npm install
 ## Basic Usage
 
 ```js
-import { createVariable } from "./src/index.js";
+import { createVariable, createEffect } from "voxjs";
 
 const [count, setCount] = createVariable(0);
+
+createEffect(() => {
+    console.log(count.getValue());
+}, [count]);
+
+setCount(1);
+setCount(2);
 ```
 
 ---
 
-## Bind Variable to DOM
-
-```html
-<p vox-variable="count"></p>
-```
-
-When the variable changes, the DOM updates automatically.
-
----
-
-## Input Binding
-
-```html
-<input vox-value="count">
-```
-
----
-
-## Conditional Rendering
-
-```html
-<div vox-if="isVisible">
-  Visible content
-</div>
-```
-
----
-
-## List Rendering
-
-```html
-<li vox-for-each="item in items">
-  <span vox-variable="item"></span>
-</li>
-```
-
----
-
-## Event Binding
-
-```html
-<button vox-on:click="increment">
-  Increment
-</button>
-```
-
----
-
-## Template Loading
-
-```html
-<div vox-template="./template.html"></div>
-```
-
-Template supports interpolation:
-
-```html
-<p>{{ name }}</p>
-```
-
----
-
-## Example
+## DOM Initialization
 
 ```js
-const [name, setName] = createVariable("Raphael");
+import { voxMain } from "voxjs";
 
-registry.set("name", name);
-registry.set("setName", setName);
+voxMain();
 ```
+
+---
+
+## Template Example
 
 ```html
-<input vox-value="name" vox-set-value="setName">
-<p vox-variable="name"></p>
+<div vox-text="counter"></div>
+<button vox-click="increment">+</button>
 ```
 
 ---
 
-## Goal
+## State Management
 
-Vox is an educational micro-framework designed to better understand:
+```js
+import { State } from "voxjs";
 
-* reactivity
-* dependency tracking
-* DOM runtime behavior
-* declarative bindings
+const state = State.getInstance();
+state.create("user");
+state.addVariable("user", "name", "Ana");
+
+console.log(state.get("user", "name"));
+```
 
 ---
 
-## Status
+## Build
 
-Experimental — currently evolving.
+```bash
+npm run build
+```
+
+Build output:
+
+```bash
+dist/
+  vox.esm.js
+  vox.cjs
+```
+
+---
+
+## Development
+
+```bash
+npm run watch
+```
+
+---
+
+## Project Status
+
+Vox is currently experimental and under active internal iteration.
+
+APIs may change while core architecture stabilizes.
+
+---
+
+## Goals
+
+* Keep runtime small
+* Improve consistency of reactive internals
+* Expand directive system
+* Add stronger testing coverage
+* Stabilize public API
 
 ---
 
