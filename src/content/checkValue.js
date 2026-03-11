@@ -21,6 +21,7 @@ export const checkValue = () => {
             const cleanup = createEffect(() => {
                 if (!node.isConnected) {
                     cleanup();
+                    return;
                 }
                 
                 node.value = `${variable}`;

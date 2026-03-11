@@ -51,6 +51,7 @@ export const checkVariables = (parentNode = document) => {
             const cleanup = createEffect(() => {
                 if (!node.isConnected) {
                     cleanup();
+                    return;
                 }
                 
                 node.innerHTML = getValue(variable, parsedVariableName);

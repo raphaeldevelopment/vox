@@ -77,6 +77,7 @@ export const checkForEach = (voxRestart) => {
             const cleanup = createEffect(() => {
                 if (!node.isConnected) {
                     cleanup();
+                    return;
                 }
                 
                 undoReplaceWith(node, nodes);
