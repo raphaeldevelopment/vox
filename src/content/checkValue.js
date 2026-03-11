@@ -18,7 +18,11 @@ export const checkValue = () => {
             const variable = variableRegistry.get(variableName);
 
             node.value = `${variable}`;
-            createEffect(() => {
+            const cleanup = createEffect(() => {
+                if (!node.isConnected) {
+                    cleanup();
+                }
+                
                 node.value = `${variable}`;
             }, [variable]);
 

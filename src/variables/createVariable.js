@@ -10,11 +10,15 @@ import {EffectsStack} from "../utils/EffectsStack.js";
  */
 export const createVariable = initialValue => {
     /** @type {Array<function(T, T): void>} */
-    const events = [];
+    const events = new Set();
 
     /** @type {function(function(T, T): void): void} */
     const addEvent = event => {
-        events.push(event);
+        events.add(event);
+
+        return () => {
+            events.delete(event);
+        }
     }
 
     /** @type {Variable<T>} */

@@ -35,8 +35,12 @@ export const checkTemplates = async () => {
         });
 
         node.innerHTML = parsedTemplate;
-
-        createEffect(() => {
+        
+        const cleanup = createEffect(() => {
+            if (!node.isConnected) {
+                cleanup();
+            }
+                
             variables.length = 0;
             const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
                 key = key.trim();

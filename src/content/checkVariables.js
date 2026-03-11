@@ -48,7 +48,11 @@ export const checkVariables = (parentNode = document) => {
         if (variableRegistry.has(variableName)) {
             const variable = variableRegistry.get(variableName);
             node.innerHTML = getValue(variable, parsedVariableName);
-            createEffect(() => {
+            const cleanup = createEffect(() => {
+                if (!node.isConnected) {
+                    cleanup();
+                }
+                
                 node.innerHTML = getValue(variable, parsedVariableName);
             }, [variable])
         }

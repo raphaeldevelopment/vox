@@ -74,7 +74,11 @@ export const checkForEach = (voxRestart) => {
             const variable = variableRegistry.get(variableName);
             let nodes = replaceWith(node, variable);
 
-            createEffect(() => {
+            const cleanup = createEffect(() => {
+                if (!node.isConnected) {
+                    cleanup();
+                }
+                
                 undoReplaceWith(node, nodes);
                 nodes = replaceWith(node, variable);
                 if (nodes.length > 0) {

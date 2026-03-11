@@ -29,7 +29,11 @@ export const checkAttributes = () => {
                 const variable = variableRegistry.get(variableName);
 
                 node.setAttribute(attrName, `${variable}`);
-                createEffect(() => {
+                const cleanup = createEffect(() => {
+                    if (!node.isConnected) {
+                        cleanup();
+                    }
+                
                     node.setAttribute(attrName, `${variable}`);
                 }, [variable])
             }
