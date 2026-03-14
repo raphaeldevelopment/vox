@@ -1,4 +1,4 @@
-import { CallbackRegistry } from "../callbacks/CallbackRegistry.js";
+import { CallbackRegistry } from "../utils/CallbackRegistry.js";
 import { VOX_EVENT_SELECTOR } from "./consts.js";
 
 /**

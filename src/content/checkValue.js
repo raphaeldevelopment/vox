@@ -1,5 +1,5 @@
 import { createEffect } from "../effects/createEffect.js";
-import { CallbackRegistry } from "../callbacks/CallbackRegistry.js";
+import { CallbackRegistry } from "../utils/CallbackRegistry.js";
 import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_VALUE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
@@ -18,7 +18,9 @@ export const checkValue = (parentNode = document) => {
         if (!variableRegistry.has(variableName)) {
             return;
         }
-        const variable = variableRegistry.get(variableName);
+        const isState = variableName.indexOf("->") > -1;
+        const state = State.getInstance();
+        const variable = isState ? state.get(variableName, key) : variableRegistry.get(variableName);
         let cleanup = () => {};
         const guard = (init, cleanup) => guardNode(node, `voxValueSet`, variableName, init, cleanup);
 
@@ -40,12 +42,15 @@ export const checkValue = (parentNode = document) => {
 
         logic(true);   
 
-        if (!callbackRegistry.has(variableName)) {
+        if (isState || !callbackRegistry.has(variableName)) {
             return;
         }
         const callback = callbackRegistry.get(variableName);
         node.addEventListener("input", (e) => {
-            callback(e.target.value);
+            if (isState) {
+                return variable = e.target.value;
+            }
+            return callback(e.target.value);
         });
     })
 
