@@ -1,6 +1,7 @@
-import {Variable} from "../utils/Variable.js";
-import {Callback} from "../utils/Callback.js";
+import {Variable} from "./Variable.js";
+import {Callback} from "../callbacks/Callback.js";
 import {EffectsStack} from "../utils/EffectsStack.js";
+import {createEffect} from "../effects/createEffect.js";
 
 /**
  * Create a fresh variable
@@ -8,9 +9,10 @@ import {EffectsStack} from "../utils/EffectsStack.js";
  * @param {T} initialValue
  * @returns {Array<T|function(T): void>} [valoare, setter]
  */
-export const createVariable = initialValue => {
-    /** @type {Array<function(T, T): void>} */
+export const createVariable = (initialValue, variables = []) => {
+    /** @type {Set<function(T, T): void>} */
     const events = new Set();
+    let variableCleanup = null;
 
     /** @type {function(function(T, T): void): void} */
     const addEvent = event => {
@@ -21,23 +23,68 @@ export const createVariable = initialValue => {
         }
     }
 
-    /** @type {Variable<T>} */
-    const variable = new Variable(initialValue, addEvent);
-    
-    /** Sets the new value
-     * @param {T} newValue the new value
-     */
-    const setVariable = newValue => {
-        /** @type {T} */
-        const oldValue = variable.getValue();
+    const triggerEvents = (newValue, oldValue) => {
         const effectsStack = EffectsStack.getInstance();
-        if (Object.is(oldValue, newValue)) {
+
+        events.forEach(event => {
+            effectsStack.addEffect(() => event(newValue, oldValue));
+        });
+    };
+
+    const attachDerivedEffect = (variable, getter, variables) => {
+        return createEffect(() => {
+            const oldValue = variable.getValue();
+            const calculated = getter();
+
+            if (Object.is(calculated, oldValue)) {
+                return;
+            }
+
+            variable.setValue(calculated);
+            triggerEvents(calculated, oldValue);
+        }, variables);
+    };
+
+    const createInitialVariable = (initialValue, variables = []) => {
+        let variable = null;
+        if (typeof initialValue === "function") {
+            variable = new Variable(initialValue(), addEvent);
+
+            if (variables.length > 0) {
+                variableCleanup = attachDerivedEffect(variable, initialValue, variables);
+            }
+        } else {
+            variable = new Variable(initialValue, addEvent);
+        }
+
+        return variable;
+    }
+
+    const variable = createInitialVariable(initialValue, variables);
+
+    const setVariable = (newValue, variables = []) => {
+        if (variableCleanup) {
+            variableCleanup();
+            variableCleanup = null;
+        }
+
+        if (typeof newValue === "function" && variables.length > 0) {
+            variableCleanup = attachDerivedEffect(variable, newValue, variables);
+
             return;
         }
-        variable.setValue(newValue);
 
-        events.forEach(event => effectsStack.addEffect(event.bind(event, newValue, oldValue)));
-    }
+        const oldValue = variable.getValue();
+        const calculated = typeof newValue === "function" ? newValue() : newValue;
+
+        if (Object.is(calculated, oldValue)) {
+            return;
+        }
+
+        variable.setValue(calculated);
+        triggerEvents(calculated, oldValue);
+    };
+
 
     return [variable, new Callback(setVariable)];
 }

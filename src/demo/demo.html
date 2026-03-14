@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vox createVariable testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 16px;
+            line-height: 1.5;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            margin-top: 28px;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        #output {
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        #output > div {
+            margin: 6px 0;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .live-demo {
+            margin-top: 32px;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .live-demo p {
+            margin: 8px 0;
+            font-size: 18px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+        }
+
+        code {
+            background: #efefef;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>createVariable test page</h1>
+    <p>
+        Pagina asta verifică variabile simple, variabile derivate, cleanup de effects
+        și actualizare live în DOM.
+    </p>
+
+    <div id="output"></div>
+
+    <div class="live-demo">
+        <h2>Live demo</h2>
+        <p>Count: <strong id="live-count">0</strong></p>
+        <p>Double: <strong id="live-double">0</strong></p>
+
+        <div class="buttons">
+            <button id="increment">Increment</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+
+    <script type="module" src="./demo.js"></script>
+</body>
+</html>
