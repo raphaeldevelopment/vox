@@ -26,6 +26,12 @@ function makeConfig({ name, entry, filename, type, outputModule = false, clean =
     stats: "normal",
     optimization: {
         realContentHash: false
+    },
+    resolve: {
+        alias: {
+            "@vox/core": path.resolve("./src/core"),
+            "@vox/components": path.resolve("./src/components")
+        }
     }
   };
 }
