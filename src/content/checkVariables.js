@@ -1,5 +1,5 @@
 import { createEffect } from "../effects/createEffect.js";
-import { VariableRegistry } from "../utils/VariableRegistry.js";
+import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_VARIABLE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
 import { State } from "../state/State.js";
@@ -64,12 +64,17 @@ export const checkVariables = (parentNode = document) => {
         const logic = init => {
             try {
                 guard(init, cleanup);
+                const value = type === "state" ? variable.getValue() : getVariableValue(variable, parsedVariableName);
 
-                node.innerHTML = type === "state" ? variable : getVariableValue(variable, parsedVariableName);               
+                node.innerHTML = typeof value === "object" ? JSON.stringify(value) : value;               
                 if (init) {     
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
+                }
+
+                if (type === "state") {
+                    console.log(variable.getValue());
                 }
             } catch (err) {
                 cleanup();

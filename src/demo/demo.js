@@ -1,184 +1,172 @@
+// demo/demo.js
 import { createVariable } from "../variables/createVariable.js";
 import { createEffect } from "../effects/createEffect.js";
+import { voxMain } from "../content/voxMain.js";
+import { State } from "../state/State.js";
+import { VariableRegistry } from "../variables/VariableRegistry.js";
+import { CallbackRegistry } from "../callbacks/CallbackRegistry.js";
+import { voxDebug } from "../debug/voxDebug.js";
 
-const output = document.querySelector("#output");
+const variableRegistry = VariableRegistry.getInstance();
+const callbackRegistry = CallbackRegistry.getInstance();
+const state = State.getInstance();
 
-const log = (title, value) => {
-    const line = document.createElement("div");
-    line.innerHTML = `<strong>${title}</strong>: ${value}`;
-    output.appendChild(line);
-};
+/* ---------------------------
+ * Persistent state bootstrap
+ * --------------------------- */
+if (!state.has("profile")) {
+  state.create("profile");
+}
 
-const section = title => {
-    const el = document.createElement("h2");
-    el.textContent = title;
-    output.appendChild(el);
-};
+if (!state.has("profile", "savedName")) {
+  state.addVariable("profile", "savedName", "Ana");
+}
 
-const separator = () => {
-    const hr = document.createElement("hr");
-    output.appendChild(hr);
-};
+if (!state.has("profile", "visits")) {
+  state.addVariable("profile", "visits", 0);
+}
 
-const read = variable => variable.getValue();
-const write = callback => value => callback.call(value);
+console.log(state);
 
-section("1. Basic variable");
+const profileState = state.get("profile");
+profileState.visits = state.get("profile", "visits").getValue() + 1;
 
+/* ---------------------------
+ * Variables
+ * --------------------------- */
 const [count, setCount] = createVariable(0);
+const [name, setName] = createVariable("Vox User");
+const [showDetails, setShowDetails] = createVariable(true);
+const [themeName, setThemeName] = createVariable("ocean");
+const [tags, setTags] = createVariable(["reactive", "dom-first", "tiny"]);
+const [doubleCount] = createVariable(() => count.getValue() * 2, [count]);
 
-createEffect((newValue, oldValue) => {
-    log("count changed", `${oldValue} → ${newValue}`);
+/* ---------------------------
+ * Registries
+ * --------------------------- */
+variableRegistry.set("count", count);
+variableRegistry.set("name", name);
+variableRegistry.set("showDetails", showDetails);
+variableRegistry.set("themeName", themeName);
+variableRegistry.set("tags", tags);
+variableRegistry.set("doubleCount", doubleCount);
+
+// vox-value expects the same key to exist in CallbackRegistry
+callbackRegistry.set("name", setName);
+
+/* ---------------------------
+ * Effect log
+ * --------------------------- */
+const effectLogNode = document.getElementById("effect-log");
+const effectLog = [];
+
+const pushLog = (message) => {
+  effectLog.unshift(`[${new Date().toLocaleTimeString()}] ${message}`);
+  effectLog.splice(10);
+  effectLogNode.innerHTML = effectLog.map((entry) => `<li>${entry}</li>`).join("");
+};
+
+pushLog("Demo booted");
+
+createEffect(() => {
+  pushLog(`count changed to ${count.getValue()}`);
 }, [count]);
 
-log("initial count", read(count));
+createEffect(() => {
+  pushLog(`name changed to "${name.getValue()}"`);
+}, [name]);
 
-write(setCount)(1);
-write(setCount)(2);
-write(setCount)(2);
+createEffect(() => {
+  pushLog(`showDetails is now ${showDetails.getValue()}`);
+}, [showDetails]);
 
-log("final count", read(count));
+createEffect(() => {
+  pushLog(`theme switched to ${themeName.getValue()}`);
+}, [themeName]);
 
-separator();
+createEffect(() => {
+  pushLog(`tags updated: ${tags.getValue().join(", ")}`);
+}, [tags]);
 
-section("2. Derived variable from dependencies");
+/* ---------------------------
+ * Callbacks / Events
+ * --------------------------- */
+const increment = () => setCount(count.getValue() + 1);
+const decrement = () => setCount(count.getValue() - 1);
+const resetCounter = () => setCount(0);
 
-const [price, setPrice] = createVariable(100);
-const [quantity, setQuantity] = createVariable(2);
+const toggleDetails = () => setShowDetails(!showDetails.getValue());
 
-const [total] = createVariable(
-    () => read(price) * read(quantity),
-    [price, quantity]
-);
-
-createEffect((newValue, oldValue) => {
-    log("total changed", `${oldValue} → ${newValue}`);
-}, )
-
-log("initial price", read(price));
-log("initial quantity", read(quantity));
-log("initial total", read(total));
-
-write(setPrice)(150);
-log("total after price=150", read(total));
-
-write(setQuantity)(3);
-log("total after quantity=3", read(total));
-
-separator();
-
-section("3. Replace derived variable with direct value");
-
-const [, setTotal] = createVariable(0); // dummy example removed below
-
-const [score, setScore] = createVariable(10);
-const [bonus, setBonus] = createVariable(5);
-
-const [finalScore, setFinalScore] = createVariable(
-    () => read(score) + read(bonus),
-    [score, bonus]
-);
-
-finalScore.addEvent((newValue, oldValue) => {
-    log("finalScore changed", `${oldValue} → ${newValue}`);
-});
-
-log("initial finalScore", read(finalScore));
-
-write(setScore)(20);
-log("after score=20", read(finalScore));
-
-write(setFinalScore)(999);
-log("after setFinalScore(999)", read(finalScore));
-
-write(setBonus)(100);
-log("after bonus=100 (should stay 999)", read(finalScore));
-
-separator();
-
-section("4. Replace direct value with a new derived formula");
-
-const [a, setA] = createVariable(1);
-const [b, setB] = createVariable(2);
-const [result, setResult] = createVariable(0);
-
-result.addEvent((newValue, oldValue) => {
-    log("result changed", `${oldValue} → ${newValue}`);
-});
-
-log("initial result", read(result));
-
-write(setResult)(() => read(a) + read(b), [a, b]);
-log("result after derived formula a+b", read(result));
-
-write(setA)(10);
-log("result after a=10", read(result));
-
-write(setB)(20);
-log("result after b=20", read(result));
-
-separator();
-
-section("5. Change derived formula");
-
-const [x, setX] = createVariable(2);
-const [y, setY] = createVariable(3);
-
-const [computedValue, setComputedValue] = createVariable(
-    () => read(x) * read(y),
-    [x, y]
-);
-
-computedValue.addEvent((newValue, oldValue) => {
-    log("computedValue changed", `${oldValue} → ${newValue}`);
-});
-
-log("initial computedValue", read(computedValue));
-
-write(setX)(4);
-log("after x=4", read(computedValue));
-
-write(setComputedValue)(() => read(x) - read(y), [x, y]);
-log("after formula changed to x-y", read(computedValue));
-
-write(setY)(1);
-log("after y=1", read(computedValue));
-
-separator();
-
-section("6. Function without dependencies = one-time evaluation");
-
-const [plainFunctionValue, setPlainFunctionValue] = createVariable(0);
-
-write(setPlainFunctionValue)(() => 42);
-log("plainFunctionValue", read(plainFunctionValue));
-
-separator();
-
-section("7. Visual live binding");
-
-const liveCount = document.querySelector("#live-count");
-const liveDouble = document.querySelector("#live-double");
-const incButton = document.querySelector("#increment");
-const resetButton = document.querySelector("#reset");
-
-const [uiCount, setUiCount] = createVariable(0);
-const [uiDouble] = createVariable(() => read(uiCount) * 2, [uiCount]);
-
-const renderLive = () => {
-    liveCount.textContent = String(read(uiCount));
-    liveDouble.textContent = String(read(uiDouble));
+const toggleTheme = () => {
+  setThemeName(themeName.getValue() === "ocean" ? "forest" : "ocean");
 };
 
-uiCount.addEvent(() => renderLive());
-uiDouble.addEvent(() => renderLive());
+const clearName = () => setName("");
 
-renderLive();
+const saveNameToState = () => {
+  profileState.savedName = name.getValue().trim() || "Anonymous";
+  pushLog(`saved "${profileState.savedName}" to persistent state`);
+};
 
-incButton.addEventListener("click", () => {
-    write(setUiCount)(read(uiCount) + 1);
-});
+const incrementVisits = () => {
+  profileState.visits = state.get("profile", "visits").getValue() + 1;
+};
 
-resetButton.addEventListener("click", () => {
-    write(setUiCount)(0);
-});
+const resetVisits = () => {
+  profileState.visits = 0;
+};
+
+const addTag = () => {
+  const next = [...tags.getValue(), `tag-${tags.getValue().length + 1}`];
+  setTags(next);
+};
+
+const removeLastTag = () => {
+  const next = [...tags.getValue()];
+  next.pop();
+  setTags(next);
+};
+
+const debugApp = () => {
+  voxDebug();
+  pushLog("voxDebug() called - check console");
+};
+
+callbackRegistry.set("increment", increment);
+callbackRegistry.set("decrement", decrement);
+callbackRegistry.set("resetCounter", resetCounter);
+callbackRegistry.set("toggleDetails", toggleDetails);
+callbackRegistry.set("toggleTheme", toggleTheme);
+callbackRegistry.set("clearName", clearName);
+callbackRegistry.set("saveNameToState", saveNameToState);
+callbackRegistry.set("incrementVisits", incrementVisits);
+callbackRegistry.set("resetVisits", resetVisits);
+callbackRegistry.set("addTag", addTag);
+callbackRegistry.set("removeLastTag", removeLastTag);
+callbackRegistry.set("debugApp", debugApp);
+
+/* ---------------------------
+ * Template demo
+ * --------------------------- */
+const templateHtml = `
+  <div>
+    <strong>Template preview</strong>
+    <p style="margin:8px 0 0;">
+      Hello <b>{{ name }}</b>, current count is <b>{{ count }}</b>
+      and double count is <b>{{ doubleCount }}</b>.
+    </p>
+  </div>
+`;
+
+const templateUrl = URL.createObjectURL(
+  new Blob([templateHtml], { type: "text/html" })
+);
+
+document
+  .getElementById("template-slot")
+  .setAttribute("vox-template", templateUrl);
+
+/* ---------------------------
+ * Start Vox
+ * --------------------------- */
+voxMain();

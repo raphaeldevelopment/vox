@@ -115,7 +115,7 @@ export class State {
             savedStorage[key] = {};
 
             for (const [stateKey, variable] of state.entries()) {
-                savedStorage[key][stateKey] = variable.value;
+                savedStorage[key][stateKey] = variable.value.getValue();
             }
         }
 

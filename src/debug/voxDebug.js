@@ -1,5 +1,5 @@
 import { State } from "../state/State.js";
-import { VariableRegistry } from "../utils/VariableRegistry.js";
+import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { voxLog } from "./voxLog.js";
 
 export function voxDebug() {

@@ -1,103 +1,136 @@
+<!-- demo/demo.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vox createVariable testing</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 16px;
-            line-height: 1.5;
-        }
-
-        h1 {
-            margin-bottom: 8px;
-        }
-
-        h2 {
-            margin-top: 28px;
-            margin-bottom: 10px;
-            font-size: 20px;
-        }
-
-        #output {
-            background: #f7f7f7;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 16px;
-        }
-
-        #output > div {
-            margin: 6px 0;
-        }
-
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid #ddd;
-        }
-
-        .live-demo {
-            margin-top: 32px;
-            padding: 16px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: #fafafa;
-        }
-
-        .live-demo p {
-            margin: 8px 0;
-            font-size: 18px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        button {
-            padding: 10px 16px;
-            border: 1px solid #bbb;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #f0f0f0;
-        }
-
-        code {
-            background: #efefef;
-            padding: 2px 6px;
-            border-radius: 6px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vox - Full Demo</title>
+  <link rel="stylesheet" href="demo.css">
 </head>
 <body>
-    <h1>createVariable test page</h1>
-    <p>
-        Pagina asta verifică variabile simple, variabile derivate, cleanup de effects
-        și actualizare live în DOM.
-    </p>
+  <div class="page">
+    <section class="hero">
+      <div>
+        <h1>Vox full demo</h1>
+        <p>
+          Demo complet pentru variabile reactive, efecte, binding pe text/input/atribute,
+          events, <span class="mono">vox-if</span>, <span class="mono">vox-for-each</span>,
+          template loading și state persistent.
+        </p>
+      </div>
 
-    <div id="output"></div>
+      <div class="row">
+        <button vox-on:click="toggleTheme">Toggle theme</button>
+        <button vox-on:click="debugApp">voxDebug()</button>
+      </div>
+    </section>
 
-    <div class="live-demo">
-        <h2>Live demo</h2>
-        <p>Count: <strong id="live-count">0</strong></p>
-        <p>Double: <strong id="live-double">0</strong></p>
+    <section class="grid">
+      <article class="card span-4" vox-attr-data-theme="themeName">
+        <h2>Reactive counter</h2>
+        <div class="stat" vox-variable="count"></div>
+        <p class="muted">Derived value: <strong vox-variable="doubleCount"></strong></p>
 
-        <div class="buttons">
-            <button id="increment">Increment</button>
-            <button id="reset">Reset</button>
+        <div class="row">
+          <button vox-on:click="decrement">-1</button>
+          <button vox-on:click="increment">+1</button>
+          <button vox-on:click="resetCounter">Reset</button>
         </div>
-    </div>
+      </article>
 
-    <script type="module" src="./demo.js"></script>
+      <article class="card span-4">
+        <h2>Two-way binding</h2>
+        <div class="stack">
+          <input
+            type="text"
+            placeholder="Type your name..."
+            vox-value="name"
+          />
+          <div class="panel">
+            Salut, <strong vox-variable="name"></strong> 👋
+          </div>
+          <div class="row">
+            <button vox-on:click="saveNameToState">Save to persistent state</button>
+            <button vox-on:click="clearName">Clear</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-4">
+        <h2>Persistent State</h2>
+        <div class="stack">
+          <div class="panel">
+            Saved name: <strong vox-variable="profile->savedName"></strong>
+          </div>
+          <div class="panel">
+            Visits in local state: <strong vox-variable="profile->visits"></strong>
+          </div>
+          <div class="row">
+            <button vox-on:click="incrementVisits">+1 visit</button>
+            <button vox-on:click="resetVisits">Reset visits</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <h2>Conditional rendering</h2>
+        <div class="row">
+          <button vox-on:click="toggleDetails">Toggle details</button>
+        </div>
+
+        <div class="panel" style="margin-top:12px;" vox-if="showDetails">
+          <strong>Details are visible.</strong>
+          <p class="muted">
+            This block exists only while <span class="mono">showDetails</span> is truthy.
+          </p>
+          <p class="muted">
+            Current theme: <span vox-variable="themeName"></span>
+          </p>
+        </div>
+      </article>
+
+      <article class="card span-5">
+        <h2>Attribute binding</h2>
+        <p class="muted">Card attribute is bound through <span class="mono">vox-attr-data-theme</span>.</p>
+        <div class="panel">
+          Active theme: <strong vox-variable="themeName"></strong>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>List rendering</h2>
+        <div class="row">
+          <button vox-on:click="addTag">Add tag</button>
+          <button vox-on:click="removeLastTag">Remove last</button>
+        </div>
+
+        <div class="pill-list">
+          <div class="pill" vox-for-each="tag in tags">
+            <span class="dot"></span>
+            <span vox-variable="tag"></span>
+          </div>
+        </div>
+
+        <p class="footer-note">
+          Pentru <span class="mono">vox-for-each</span>, item-ul repetat funcționează cel mai simplu cu valori primitive.
+        </p>
+      </article>
+
+      <article class="card span-6">
+        <h2>Template loading</h2>
+        <div id="template-slot" class="template-box"></div>
+        <p class="footer-note">
+          Template-ul e injectat din JS printr-un Blob URL, ca să rămână demo-ul în doar 2 fișiere.
+        </p>
+      </article>
+
+      <article class="card span-12">
+        <h2>Effects log</h2>
+        <ol id="effect-log" class="log"></ol>
+      </article>
+    </section>
+  </div>
+
+  <script type="module" src="./demo.js"></script>
 </body>
 </html>
