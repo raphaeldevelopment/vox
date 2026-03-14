@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { State } from "../../src/state/State.js";
+import { State } from "../../src/core/state/State.js";
 
 class FakeStorage {
     constructor() {

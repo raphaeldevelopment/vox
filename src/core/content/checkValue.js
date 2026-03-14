@@ -1,5 +1,5 @@
 import { createEffect } from "../effects/createEffect.js";
-import { CallbackRegistry } from "../utils/CallbackRegistry.js";
+import { CallbackRegistry } from "../callbacks/CallbackRegistry.js";
 import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_VALUE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
