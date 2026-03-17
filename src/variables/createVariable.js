@@ -62,7 +62,7 @@ export const createVariable = (initialValue, variables = [], computedValue) => {
 
     const variable = createInitialVariable(initialValue, variables, computedValue);
 
-    const setVariable = (newValue, variables = []) => {
+    const setVariable = (newValue, variables = [], initialValue) => {
         if (variableCleanup) {
             variableCleanup();
             variableCleanup = null;
@@ -70,12 +70,10 @@ export const createVariable = (initialValue, variables = [], computedValue) => {
 
         if (typeof newValue === "function" && variables.length > 0) {
             variableCleanup = attachDerivedEffect(variable, newValue, variables);
-
-            return;
         }
 
         const oldValue = variable.getValue();
-        const calculated = typeof newValue === "function" ? newValue() : newValue;
+        const calculated = typeof newValue === "function" ? initialValue || newValue() : newValue;
 
         if (Object.is(calculated, oldValue)) {
             return;

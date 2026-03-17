@@ -36,7 +36,9 @@ profileState.visits = state.get("profile", "visits").value + 1;
 const [count, setCount] = createVariable(0);
 const [name, setName] = createVariable("Vox User");
 const [name2, setName2] = createVariable("Optimus");
-const fullName = compose(() => `${name} ${name2}`);
+const fullName = compose(() => count < 5 ? `${name}` : `${name2}`);
+
+console.log(fullName);
 
 const [showDetails, setShowDetails] = createVariable(true);
 const [themeName, setThemeName] = createVariable("ocean");
