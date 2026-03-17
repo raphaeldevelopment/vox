@@ -6,3 +6,5 @@ export { voxMain } from "./content/voxMain.js";
 export { State } from "./state/State.js";
 export { VariableRegistry } from "./variables/VariableRegistry.js";
 export { CallbackRegistry } from "./callbacks/CallbackRegistry.js";
+export { batch } from "./effects/batch.js";
+export { batchAsync } from "./effects/batchAsync.js";

@@ -1,6 +1,6 @@
 import {Variable} from "./Variable.js";
 import {Callback} from "../callbacks/Callback.js";
-import {EffectsStack} from "../utils/EffectsStack.js";
+import {EffectsStack} from "../effects/EffectsStack.js";
 import {createEffect} from "../effects/createEffect.js";
 
 /**

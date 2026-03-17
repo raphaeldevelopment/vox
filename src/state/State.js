@@ -1,6 +1,6 @@
 import { createVariable } from "../variables/createVariable.js";
 import { createEffect } from "../effects/createEffect.js";
-import { EffectsStack } from "../utils/EffectsStack.js";
+import { EffectsStack } from "../effects/EffectsStack.js";
 
 class FakeStorage {
     constructor() {
