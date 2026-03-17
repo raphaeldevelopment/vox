@@ -21,6 +21,10 @@ export class Variable {
     static setCollector(collector) {        
         Variable.collector = collector;
     }
+
+    static getCollector() {        
+        return Variable.collector;
+    }
     /**
      * Get the add event function
      * @returns {function(function(...*): void): void} 
@@ -43,6 +47,10 @@ export class Variable {
         if (Variable.collector) {
             Variable.collector.add(this);
         }
+        return this.#value;
+    }
+
+    peek() {
         return this.#value;
     }
 
