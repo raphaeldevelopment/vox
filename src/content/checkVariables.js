@@ -5,11 +5,12 @@ import { guardNode } from "../utils/guardNode.js";
 import { State } from "../state/State.js";
 
 const parseVariableName = variableName => {
-    const splitter = variableName.indexOf("->") > -1 ? "->" : ".";
+    const isState = variableName.indexOf("->") > -1;
+    const splitter = isState ? "->" : ".";
     const variableParts = variableName.split(splitter);
 
     const parsedVariable = {
-        variableName: variableParts[0]
+        variableName: isState ? variableParts : variableParts[0]
     }
 
     if (variableParts[1]) {
@@ -17,7 +18,7 @@ const parseVariableName = variableName => {
         const index = isArrayElement ? Number(isArrayElement[1]) : null;
         if (Number.isInteger(index)) {
             parsedVariable.index = index
-        } else {
+        } else if (!isState) {
             parsedVariable.key = variableParts[1];
         }
         parsedVariable.type = splitter === "." ? "variable" : "state";
@@ -54,10 +55,11 @@ export const checkVariables = (parentNode = document) => {
             return;
         }
 
-        if (type === "state" && !state.has(variableName, key)) {
+        if (type === "state" && !state.has(...variableName)) {
             return;
         }
-        const variable = type === "state" ? state.get(variableName, key) : variableRegistry.get(variableName);
+
+        const variable = type === "state" ? state.get(...variableName).value : variableRegistry.get(variableName);
         let cleanup = () => {};
         const guard = (init, cleanup) => guardNode(node, `voxVariableSet`, variableName, init, cleanup);
 
@@ -71,10 +73,6 @@ export const checkVariables = (parentNode = document) => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
-                }
-
-                if (type === "state") {
-                    console.log(variable.getValue());
                 }
             } catch (err) {
                 cleanup();

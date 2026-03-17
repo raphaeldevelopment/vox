@@ -21,7 +21,7 @@ export const checkValue = (parentNode = document) => {
         }
         const isState = variableName.indexOf("->") > -1;
         const state = State.getInstance();
-        const variable = isState ? state.get(variableName, key) : variableRegistry.get(variableName);
+        const variable = isState ? state.get(...variableName.split("->")) : variableRegistry.get(variableName);
         let cleanup = () => {};
         const guard = (init, cleanup) => guardNode(node, `voxValueSet`, variableName, init, cleanup);
 

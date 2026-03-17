@@ -1,6 +1,6 @@
 {
   "name": "vox-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lightweight experimental reactive JavaScript library",
   "type": "module",
   "main": "./dist/vox.cjs",
@@ -9,10 +9,6 @@
     ".": {
       "import": "./dist/vox.esm.js",
       "require": "./dist/vox.cjs"
-    },
-    "./core": {
-      "import": "./dist/core/vox.esm.js",
-      "require": "./dist/core/vox.cjs"
     }
   },
   "files": [

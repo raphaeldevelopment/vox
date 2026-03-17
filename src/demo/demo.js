@@ -19,17 +19,17 @@ if (!state.has("profile")) {
 }
 
 if (!state.has("profile", "savedName")) {
-  state.addVariable("profile", "savedName", "Ana");
+  state.addVariable("Ana", "profile", "savedName");
 }
 
 if (!state.has("profile", "visits")) {
-  state.addVariable("profile", "visits", 0);
+  state.addVariable(0, "profile", "visits");
 }
 
 console.log(state);
 
 const profileState = state.get("profile");
-profileState.visits = state.get("profile", "visits").getValue() + 1;
+profileState.visits = state.get("profile", "visits").value + 1;
 
 /* ---------------------------
  * Variables
@@ -104,12 +104,12 @@ const toggleTheme = () => {
 const clearName = () => setName("");
 
 const saveNameToState = () => {
-  profileState.savedName = name.getValue().trim() || "Anonymous";
-  pushLog(`saved "${profileState.savedName}" to persistent state`);
+  profileState.get("savedName").value = name.getValue().trim() || "Anonymous";
+  pushLog(`saved "${profileState.get("savedName").value}" to persistent state`);
 };
 
 const incrementVisits = () => {
-  profileState.visits = state.get("profile", "visits").getValue() + 1;
+  profileState.get("visits").value = state.get("profile", "visits").value + 1;
 };
 
 const resetVisits = () => {

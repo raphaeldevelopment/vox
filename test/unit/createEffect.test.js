@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { createVariable } from "../../src/core/variables/createVariable.js";
-import { createEffect } from "../../src/core/effects/createEffect.js";
+import { createVariable } from "../../src/variables/createVariable.js";
+import { createEffect } from "../../src/effects/createEffect.js";
 import { nextFrame } from "../utils.js";
 
 describe("createEffect", () => {

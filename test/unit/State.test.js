@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { State } from "../../src/core/state/State.js";
+import { State } from "../../src/state/State.js";
 
 class FakeStorage {
     constructor() {
@@ -38,7 +38,7 @@ describe("State", () => {
     });
 
     it("adds a reactive variable to a state bucket", () => {
-        state.addVariable("user", "name", "Ana");
+        state.addVariable( "Ana", "user", "name");
 
         expect(state.has("user")).toBe(true);
         expect(state.has("user", "name")).toBe(true);
