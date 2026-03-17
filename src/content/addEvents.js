@@ -24,8 +24,8 @@ export const addEvents = (parentNode = document) => {
         nodeAttributes.forEach(attr => {
             const eventName = attr.name.replace(`${VOX_EVENT_SELECTOR}:`, "");
             const variableName = attr.value;
-            if (callbackRegistry.has(variableName)) {
-                const callback = callbackRegistry.get(variableName);
+            if (callbackRegistry.has(variableName, node)) {
+                const callback = callbackRegistry.get(variableName, node);
 
                 node.addEventListener(eventName, callback)
             }

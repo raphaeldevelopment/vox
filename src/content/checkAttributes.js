@@ -29,10 +29,10 @@ export const checkAttributes = (parentNode = document) => {
         nodeAttributes.forEach(attr => {
             const attrName = attr.name.replace(VOX_ATTR_SELECTOR, "");
             const variableName = attr.value;
-            if (!variableRegistry.has(variableName)) {
+            if (!variableRegistry.has(variableName, node)) {
                 return;
             }
-            const variable = variableRegistry.get(variableName);
+            const variable = variableRegistry.get(variableName, node);
             let cleanup = () => {};
             const guard = (init, cleanup) => guardNode(node, `voxAttr${toCamelCase(attrName)}Set`, variableName, init, cleanup); 
 

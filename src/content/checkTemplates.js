@@ -34,10 +34,10 @@ export const checkTemplates = async () => {
 
                 const parsedTemplate = template.replace(/\{\{(.*?)\}\}/g, (_, key) => {
                     key = key.trim();
-                    if (!variableRegistry.has(key)) {
+                    if (!variableRegistry.has(key, node)) {
                         return '';
                     }
-                    const currentVariable = variableRegistry.get(key);
+                    const currentVariable = variableRegistry.get(key, node);
                     variables.push(currentVariable);
                     return currentVariable;
                 });

@@ -26,7 +26,7 @@ export const checkIf = (parentNode = document) => {
         const variableName = node.getAttribute(VOX_ATTR_IF_SELECTOR);
         let cleanup = () => {};
         let cache = null;
-        const variable = variableRegistry.get(variableName);
+        const variable = variableRegistry.get(variableName, node);
         const guard = (init, cleanup) => guardNode(node, `voxIfSet`, variableName, init, cleanup);        
 
         const logic = init => {

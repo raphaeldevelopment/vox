@@ -86,11 +86,11 @@ export const checkForEach = (voxRestart) => {
         const { variableName} = parsedRule;
         let cleanup = () => {};
 
-        if (!variableRegistry.has(variableName)) {
+        if (!variableRegistry.has(variableName, node)) {
             return;
         }
         const guard = (init, cleanup) => guardNode(container, `voxForEachSet`, variableName, init, cleanup);        
-        const variable = variableRegistry.get(variableName);
+        const variable = variableRegistry.get(variableName, node);
         let nodes = null;
         const cache = new Map();
 
