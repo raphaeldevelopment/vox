@@ -1,26 +1,28 @@
 import { Variable } from "./Variable.js";
 import { createVariable } from "./createVariable.js";
 
+const sameDeps = (a, b) =>
+    a.size === b.size && [...a].every(dep => b.has(dep));
+
 export const compose = formula => {
-    const deps = new Set();
+    let deps;
     let initialValue;
     let [variable, setVariable] = [];
-    let noVariables = null;
+    let currentDeps = null;
 
     const callFunction = () => {
         try {
+            deps = new Set();
             Variable.setCollector(deps);
             initialValue = formula();
         } finally {
             Variable.setCollector(null);
-            const newNoVariables = [...deps].length;
 
-            if (noVariables === null) {
-                noVariables = newNoVariables;
-            } else if (noVariables !== newNoVariables) {
-                console.log(initialValue);
+            if (currentDeps === null) {
+                currentDeps = deps;
+            } else if (setVariable && !sameDeps(currentDeps, deps)) {
                 setVariable(callFunction, [...deps], initialValue);
-                noVariables = newNoVariables;
+                currentDeps = deps;
             }
         }
         
