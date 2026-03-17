@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { EffectsStack } from "../../src/utils/EffectsStack.js";
+import { EffectsStack } from "../../src/effects/EffectsStack.js";
 
 describe("EffectsStack", () => {
     beforeEach(() => {
