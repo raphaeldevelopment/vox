@@ -2,6 +2,7 @@ import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_IF_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 const cacheChild = node => {
     const cache = document.createDocumentFragment();
@@ -18,6 +19,7 @@ const cacheChild = node => {
  */
 export const checkIf = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
+    const elementObserver = ElementObserver.getInstance();
     const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_IF_SELECTOR}]`);
 
     variableNodes.forEach(node => {
@@ -45,6 +47,7 @@ export const checkIf = (parentNode = document) => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
+                    elementObserver.addElement(node, cleanup);
                 }
             } catch (err) {
                 cleanup();

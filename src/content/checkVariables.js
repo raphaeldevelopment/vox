@@ -3,6 +3,7 @@ import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_VARIABLE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
 import { State } from "../state/State.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 const parseVariableName = variableName => {
     const isState = variableName.indexOf("->") > -1;
@@ -44,6 +45,7 @@ const getVariableValue = (variable, parsedVariableName) => {
  */
 export const checkVariables = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
+    const elementObserver = ElementObserver.getInstance();
     const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_VARIABLE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
@@ -73,6 +75,7 @@ export const checkVariables = (parentNode = document) => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
+                    elementObserver.addElement(node, cleanup);
                 }
             } catch (err) {
                 cleanup();

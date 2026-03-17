@@ -5,6 +5,7 @@
  */
 export const createEffect = (callback, variables) => {
     const deleteEventsStack = [];
+    
     variables.forEach(variable => {
         /** @type {function(Function): void} */
         const addEvent = variable.getAddEvent();

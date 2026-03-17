@@ -2,6 +2,7 @@ import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_TEMPLATE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 const cacheTemplate = new Map();
 /**
@@ -10,6 +11,7 @@ const cacheTemplate = new Map();
 export const checkTemplates = async () => {
     const variableRegistry = VariableRegistry.getInstance();
     const variableNodes = document.querySelectorAll(`[${VOX_ATTR_TEMPLATE_SELECTOR}]`);
+    const elementObserver = ElementObserver.getInstance();
 
     for (const node of variableNodes) {
         const templatePath = node.getAttribute(VOX_ATTR_TEMPLATE_SELECTOR);
@@ -45,6 +47,7 @@ export const checkTemplates = async () => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, variables);
+                    elementObserver.addElement(node, cleanup);
                 }
             } catch (err) {
                 cleanup();

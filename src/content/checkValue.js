@@ -4,6 +4,7 @@ import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_VALUE_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
 import { State } from "../state/State.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 /**
  * Initialize the value on an input element
@@ -11,6 +12,7 @@ import { State } from "../state/State.js";
 export const checkValue = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
     const callbackRegistry = CallbackRegistry.getInstance();
+    const elementObserver = ElementObserver.getInstance();
     const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_VALUE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
@@ -34,6 +36,7 @@ export const checkValue = (parentNode = document) => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
+                    elementObserver.addElement(node, cleanup);
                 }
             } catch (err) {
                 cleanup();

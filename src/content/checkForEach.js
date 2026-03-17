@@ -2,6 +2,7 @@ import { createEffect } from "../effects/createEffect.js";
 import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_FOR_EACH_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 const parseRule = rule => {
     const parts = rule.split (" in ");
@@ -76,6 +77,7 @@ const undoReplaceWith = (node, nodes) => {
 export const checkForEach = (voxRestart) => {
     const variableRegistry = VariableRegistry.getInstance();
     const variableNodes = document.querySelectorAll(`[${VOX_ATTR_FOR_EACH_SELECTOR}]`);
+    const elementObserver = ElementObserver.getInstance();
 
     variableNodes.forEach(node => {
         const rule = node.getAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
@@ -110,6 +112,7 @@ export const checkForEach = (voxRestart) => {
                     cleanup = createEffect(() => {
                         logic(false);
                     }, [variable]);
+                    elementObserver.addElement(node, cleanup);
                 }
             } catch (err) {
                 cleanup();

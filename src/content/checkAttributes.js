@@ -3,6 +3,7 @@ import { VariableRegistry } from "../variables/VariableRegistry.js";
 import { VOX_ATTR_SELECTOR } from "./consts.js";
 import { guardNode } from "../utils/guardNode.js";
 import { toCamelCase } from "../utils/toCamelCase.js";
+import { ElementObserver } from "../dom/ElementObserver.js";
 
 /**
  * Update attribute based on variables
@@ -10,6 +11,7 @@ import { toCamelCase } from "../utils/toCamelCase.js";
  */
 export const checkAttributes = (parentNode = document) => {
     const variableRegistry = VariableRegistry.getInstance();
+    const elementObserver = ElementObserver.getInstance();
     const variableNodes = Array.from(parentNode.querySelectorAll("*"))
         .filter(el =>
             Array.from(el.attributes).some(attr =>
@@ -43,6 +45,7 @@ export const checkAttributes = (parentNode = document) => {
                         cleanup = createEffect(() => {
                             logic(false);
                         }, [variable]);
+                        elementObserver.addElement(node, cleanup);
                     }
                 } catch (err) {
                     cleanup();
