@@ -5,7 +5,7 @@ import { checkValue } from "./checkValue.js";
 import { checkTemplates } from "./checkTemplates.js";
 import { addEvents } from "./addEvents.js";
 import { checkIf } from "./checkIf.js";
-import { VariableContext } from "../variables/VariableContext.js";
+import { VariableContext } from "../dom/VariableContext.js";
 
 const voxRestart = (parentNode) => {
     checkVariables(parentNode);

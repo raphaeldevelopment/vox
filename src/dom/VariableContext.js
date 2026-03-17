@@ -1,3 +1,5 @@
+export const CONTEXT_MAIN = "main";
+
 export class VariableContext {
     static #instance = null;
     #contexts = null;
@@ -30,6 +32,8 @@ export class VariableContext {
 
             current = current.parentElement;
         }
+
+        allContexts.push(CONTEXT_MAIN);
 
         return allContexts;
     }

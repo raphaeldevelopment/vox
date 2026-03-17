@@ -1,6 +1,4 @@
-import { VariableContext } from "./VariableContext.js";
-
-const CONTEXT_MAIN = "main";
+import { VariableContext, CONTEXT_MAIN } from "../dom/VariableContext.js";
 
 /**
  * Registration of all variables that affect DOM elements
@@ -29,7 +27,7 @@ export class VariableRegistry {
     }
 
     get(name, node) {
-        const contexts = [...this.#variableContext.getContext(node), CONTEXT_MAIN];
+        const contexts = this.#variableContext.getContext(node);
         const context = contexts.find(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
 
         if (context === undefined) {
@@ -39,8 +37,19 @@ export class VariableRegistry {
         return this.#variables.get(context).get(name);
     }
 
+    getContextName(name, node) {
+        const contexts = this.#variableContext.getContext(node);
+        const context = contexts.find(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
+
+        if (context === undefined) {
+            return null;
+        }
+
+        return context;
+    }
+
     has(name, node) {
-        const contexts = [...this.#variableContext.getContext(node), CONTEXT_MAIN];
+        const contexts = this.#variableContext.getContext(node);
         return contexts.some(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
     }
 

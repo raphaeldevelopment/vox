@@ -1,8 +1,11 @@
+import { VariableContext, CONTEXT_MAIN } from "../dom/VariableContext.js";
 /**
  * Registration of all Callbacks that affect DOM elements
  */
 export class CallbackRegistry {
     static #instance = null;
+    #callbacks = null;
+    #variableContext = null;
 
     constructor() {
         if (CallbackRegistry.#instance) {
@@ -12,7 +15,8 @@ export class CallbackRegistry {
          * @private
          * @type {Map<string, Callback>}
          */
-        this.Callbacks = new Map();
+        this.#callbacks = new Map();
+        this.#variableContext = VariableContext.getInstance();
 
         CallbackRegistry.#instance = this;
     }
@@ -23,8 +27,11 @@ export class CallbackRegistry {
      * @param {Callback} value
      * @returns {void}
      */
-    set(name, value) {
-        this.Callbacks.set(name, value);
+    set(name, value, context = CONTEXT_MAIN) {
+        if (!this.#callbacks.has(context)) {
+            this.#callbacks.set(context, new Map());
+        }
+        this.#callbacks.get(context).set(name, value);
     }
 
     /**
@@ -32,8 +39,23 @@ export class CallbackRegistry {
      * @param {string} name
      * @returns {Callback}
      */
-    get(name) {
-        return this.Callbacks.get(name);
+    get(name, node) {
+        const contexts = this.#variableContext.getContext(node);
+        const context = contexts.find(cont => this.#callbacks.has(cont) && this.#callbacks.get(cont).has(name));
+
+        if (context === undefined) {
+            return null;
+        }
+
+        return this.#callbacks.get(context).get(name);
+    }
+
+    getStrict(name, context = CONTEXT_MAIN) {
+        if (!this.hasStrict(name, context)) {
+            return null;
+        }
+
+        return this.#callbacks.get(context).get(name);
     }
 
     /**
@@ -41,8 +63,13 @@ export class CallbackRegistry {
      * @param {string} name
      * @returns {boolean}
      */
-    has(name) {
-        return this.Callbacks.has(name);
+    has(name, node) {
+        const contexts = this.#variableContext.getContext(node);
+        return contexts.some(cont => this.#callbacks.has(cont) && this.#callbacks.get(cont).has(name));
+    }
+
+    hasStrict(name, context = CONTEXT_MAIN) {
+        return this.#callbacks.has(context) && this.#callbacks.get(context).has(name);
     }
 
     /**
@@ -50,8 +77,11 @@ export class CallbackRegistry {
      * @param {string} name
      * @returns {boolean}
      */
-    delete(name) {
-        return this.Callbacks.delete(name);
+    delete(name, context = CONTEXT_MAIN) {
+        if (!this.#callbacks.has(context) || !this.#callbacks.get(context).has(name)) {
+            return null;
+        }
+        return this.#callbacks.get(context).delete(name);
     }
 
     /**
@@ -65,5 +95,3 @@ export class CallbackRegistry {
         return CallbackRegistry.#instance;
     }
 }
-
-export default CallbackRegistry;

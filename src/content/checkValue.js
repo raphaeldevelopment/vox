@@ -18,12 +18,12 @@ export const checkValue = (parentNode = document) => {
     variableNodes.forEach(node => {
         const variableName = node.getAttribute(VOX_ATTR_VALUE_SELECTOR);
 
-        if (!variableRegistry.has(variableName)) {
+        if (!variableRegistry.has(variableName, node)) {
             return;
         }
         const isState = variableName.indexOf("->") > -1;
         const state = State.getInstance();
-        const variable = isState ? state.get(...variableName.split("->")) : variableRegistry.get(variableName);
+        const variable = isState ? state.get(...variableName.split("->")) : variableRegistry.get(variableName, node);
         let cleanup = () => {};
         const guard = (init, cleanup) => guardNode(node, `voxValueSet`, variableName, init, cleanup);
 
@@ -46,10 +46,11 @@ export const checkValue = (parentNode = document) => {
 
         logic(true);   
 
-        if (isState || !callbackRegistry.has(variableName)) {
+        const context = variableRegistry.getContextName(variableName, node);
+        if (!isState && !callbackRegistry.hasStrict(variableName, context)) {
             return;
         }
-        const callback = callbackRegistry.get(variableName);
+        const callback = callbackRegistry.getStrict(variableName, context);
         node.addEventListener("input", (e) => {
             if (isState) {
                 return variable = e.target.value;
