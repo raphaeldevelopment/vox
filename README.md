@@ -334,6 +334,10 @@ See full API guarantees and behavioral contracts in:
 [docs/api-contract.md](./docs/api-contract.md)
 
 ---
+## Changelog
+
+See full release history in [CHANGELOG.md](./changelog.md)
+---
 # License
 
 MIT
