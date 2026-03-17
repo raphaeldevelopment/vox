@@ -49,6 +49,11 @@
           <div class="panel">
             Salut, <strong vox-variable="name"></strong> 👋
           </div>
+          <div vox-context="hardcoded">            
+            <div class="panel">
+                Salutam si pe <strong vox-variable="name"></strong> 👋
+            </div>
+          </div>
           <div class="row">
             <button vox-on:click="saveNameToState">Save to persistent state</button>
             <button vox-on:click="clearName">Clear</button>

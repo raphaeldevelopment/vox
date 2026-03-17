@@ -53,7 +53,7 @@ export const checkVariables = (parentNode = document) => {
         const { variableName, type, key } = parsedVariableName;
         const state = State.getInstance();
 
-        if (type === "variable" && !variableRegistry.has(variableName)) {
+        if (type === "variable" && !variableRegistry.has(variableName, node)) {
             return;
         }
 
@@ -61,7 +61,7 @@ export const checkVariables = (parentNode = document) => {
             return;
         }
 
-        const variable = type === "state" ? state.get(...variableName).value : variableRegistry.get(variableName);
+        const variable = type === "state" ? state.get(...variableName).value : variableRegistry.get(variableName, node);
         let cleanup = () => {};
         const guard = (init, cleanup) => guardNode(node, `voxVariableSet`, variableName, init, cleanup);
 

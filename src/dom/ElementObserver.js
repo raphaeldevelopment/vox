@@ -55,9 +55,14 @@ export class ElementObserver {
     #checkNode(node) {
         this.#executeCallbacks(node);
 
-        node.querySelectorAll?.('*').forEach(child => {
-            this.#executeCallbacks(child);
-        });
+        const walker = document.createTreeWalker(node, NodeFilter.SHOW_ELEMENT);
+
+        let current = walker.nextNode();
+
+        while (current) {
+            this.#executeCallbacks(current);
+            current = walker.nextNode();
+        }
     }
 
     static getInstance() {

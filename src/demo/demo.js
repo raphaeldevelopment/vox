@@ -36,6 +36,7 @@ profileState.visits = state.get("profile", "visits").value + 1;
  * --------------------------- */
 const [count, setCount] = createVariable(0);
 const [name, setName] = createVariable("Vox User");
+const [name2, setName2] = createVariable("Optimus");
 const [showDetails, setShowDetails] = createVariable(true);
 const [themeName, setThemeName] = createVariable("ocean");
 const [tags, setTags] = createVariable(["reactive", "dom-first", "tiny"]);
@@ -46,13 +47,17 @@ const [doubleCount] = createVariable(() => count.getValue() * 2, [count]);
  * --------------------------- */
 variableRegistry.set("count", count);
 variableRegistry.set("name", name);
+variableRegistry.set("name", name2, "hardcoded");
 variableRegistry.set("showDetails", showDetails);
 variableRegistry.set("themeName", themeName);
 variableRegistry.set("tags", tags);
 variableRegistry.set("doubleCount", doubleCount);
 
+console.log(variableRegistry);
+
 // vox-value expects the same key to exist in CallbackRegistry
 callbackRegistry.set("name", setName);
+callbackRegistry.set("name", setName2, "hardcoded");
 
 /* ---------------------------
  * Effect log

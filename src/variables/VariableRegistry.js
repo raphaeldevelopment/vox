@@ -1,64 +1,56 @@
+import { VariableContext } from "./VariableContext.js";
+
+const CONTEXT_MAIN = "main";
+
 /**
  * Registration of all variables that affect DOM elements
  */
 export class VariableRegistry {
     static #instance = null;
+    #variables = null;
+    #variableContext = null;
 
     constructor() {
         if (VariableRegistry.#instance) {
             return VariableRegistry.#instance;
         }
-
-        /**
-         * @private
-         * @type {Map<string, Variable>}
-         */
-        this.variables = new Map();
+        
+        this.#variableContext = VariableContext.getInstance();
+        this.#variables = new Map();
 
         VariableRegistry.#instance = this;
     }
 
-    /**
-     * Add a new variable to the registry
-     * @param {string} name
-     * @param {Variable} value
-     * @returns {void}
-     */
-    set(name, value) {
-        this.variables.set(name, value);
+    set(name, value, context = CONTEXT_MAIN) {
+        if (!this.#variables.has(context)) {
+            this.#variables.set(context, new Map());
+        }
+        this.#variables.get(context).set(name, value);
     }
 
-    /**
-     * Return a variable by name
-     * @param {string} name
-     * @returns {Variable}
-     */
-    get(name) {
-        return this.variables.get(name);
+    get(name, node) {
+        const contexts = [...this.#variableContext.getContext(node), CONTEXT_MAIN];
+        const context = contexts.find(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
+
+        if (context === undefined) {
+            return null;
+        }
+
+        return this.#variables.get(context).get(name);
     }
 
-    /**
-     * Check if variable exists
-     * @param {string} name
-     * @returns {boolean}
-     */
-    has(name) {
-        return this.variables.has(name);
+    has(name, node) {
+        const contexts = [...this.#variableContext.getContext(node), CONTEXT_MAIN];
+        return contexts.some(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
     }
 
-    /**
-     * Delete a variable
-     * @param {string} name
-     * @returns {boolean}
-     */
-    delete(name) {
-        return this.variables.delete(name);
+    delete(name, context = CONTEXT_MAIN) {
+        if (!this.#variables.has(context) || !this.#variables.get(context).has(name)) {
+            return null;
+        }
+        return this.#variables.get(context).delete(name);
     }
 
-    /**
-     * Return the instance
-     * @returns {VariableRegistry}
-     */
     static getInstance() {
         if (!VariableRegistry.#instance) {
             VariableRegistry.#instance = new VariableRegistry();
