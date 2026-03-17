@@ -1,6 +1,7 @@
 export { createVariable } from "./variables/createVariable.js";
 export { compose } from "./variables/compose.js";
 export { watch } from "./variables/watch.js";
+export { untrack } from "./variables/untrack.js";
 export { createEffect } from "./effects/createEffect.js";
 export { voxMain } from "./content/voxMain.js";
 export { State } from "./state/State.js";
