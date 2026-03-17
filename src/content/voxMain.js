@@ -5,7 +5,7 @@ import { checkValue } from "./checkValue.js";
 import { checkTemplates } from "./checkTemplates.js";
 import { addEvents } from "./addEvents.js";
 import { checkIf } from "./checkIf.js";
-import { VariableContext } from "../dom/VariableContext.js";
+import { checkContexts } from "./checkContexts.js";
 
 const voxRestart = (parentNode) => {
     checkVariables(parentNode);
@@ -19,11 +19,7 @@ const voxRestart = (parentNode) => {
  */
 export const voxMain = async () => {
     await checkTemplates();
-    const variableContext = VariableContext.getInstance();
-
-    const values = [...document.querySelectorAll('[vox-context]')]
-        .forEach(element => variableContext.addContext(element));
-
+    checkContexts();
     checkForEach(voxRestart);
     voxRestart();
 }

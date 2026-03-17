@@ -1,4 +1,5 @@
 export { createVariable } from "./variables/createVariable.js";
+export { compose } from "./variables/compose.js";
 export { createEffect } from "./effects/createEffect.js";
 export { voxMain } from "./content/voxMain.js";
 export { State } from "./state/State.js";

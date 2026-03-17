@@ -1,5 +1,6 @@
 // demo/demo.js
 import { createVariable } from "../variables/createVariable.js";
+import { compose } from "../variables/compose.js";
 import { createEffect } from "../effects/createEffect.js";
 import { voxMain } from "../content/voxMain.js";
 import { State } from "../state/State.js";
@@ -26,8 +27,6 @@ if (!state.has("profile", "visits")) {
   state.addVariable(0, "profile", "visits");
 }
 
-console.log(state);
-
 const profileState = state.get("profile");
 profileState.visits = state.get("profile", "visits").value + 1;
 
@@ -37,6 +36,8 @@ profileState.visits = state.get("profile", "visits").value + 1;
 const [count, setCount] = createVariable(0);
 const [name, setName] = createVariable("Vox User");
 const [name2, setName2] = createVariable("Optimus");
+const fullName = compose(() => `${name} ${name2}`);
+
 const [showDetails, setShowDetails] = createVariable(true);
 const [themeName, setThemeName] = createVariable("ocean");
 const [tags, setTags] = createVariable(["reactive", "dom-first", "tiny"]);
@@ -52,8 +53,6 @@ variableRegistry.set("showDetails", showDetails);
 variableRegistry.set("themeName", themeName);
 variableRegistry.set("tags", tags);
 variableRegistry.set("doubleCount", doubleCount);
-
-console.log(variableRegistry);
 
 // vox-value expects the same key to exist in CallbackRegistry
 callbackRegistry.set("name", setName);

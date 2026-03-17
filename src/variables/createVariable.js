@@ -9,7 +9,7 @@ import {createEffect} from "../effects/createEffect.js";
  * @param {T} initialValue
  * @returns {Array<T|function(T): void>} [valoare, setter]
  */
-export const createVariable = (initialValue, variables = []) => {
+export const createVariable = (initialValue, variables = [], computedValue) => {
     /** @type {Set<function(T, T): void>} */
     const events = new Set();
     let variableCleanup = null;
@@ -45,10 +45,10 @@ export const createVariable = (initialValue, variables = []) => {
         }, variables);
     };
 
-    const createInitialVariable = (initialValue, variables = []) => {
+    const createInitialVariable = (initialValue, variables = [], computedValue) => {
         let variable = null;
         if (typeof initialValue === "function") {
-            variable = new Variable(initialValue(), addEvent);
+            variable = new Variable(computedValue || initialValue(), addEvent);
 
             if (variables.length > 0) {
                 variableCleanup = attachDerivedEffect(variable, initialValue, variables);
@@ -60,7 +60,7 @@ export const createVariable = (initialValue, variables = []) => {
         return variable;
     }
 
-    const variable = createInitialVariable(initialValue, variables);
+    const variable = createInitialVariable(initialValue, variables, computedValue);
 
     const setVariable = (newValue, variables = []) => {
         if (variableCleanup) {
