@@ -327,7 +327,13 @@ Current focus:
 * API stabilization
 
 ---
+## Public API Contract
 
+See full API guarantees and behavioral contracts in:
+
+[docs/api-contract.md](./docs/api-contract.md)
+
+---
 # License
 
 MIT

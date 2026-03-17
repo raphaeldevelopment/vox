@@ -3,12 +3,6 @@ import {Callback} from "../callbacks/Callback.js";
 import {EffectsStack} from "../effects/EffectsStack.js";
 import {createEffect} from "../effects/createEffect.js";
 
-/**
- * Create a fresh variable
- * @template T
- * @param {T} initialValue
- * @returns {Array<T|function(T): void>} [valoare, setter]
- */
 export const createVariable = (initialValue, variables = [], computedValue) => {
     /** @type {Set<function(T, T): void>} */
     const events = new Set();

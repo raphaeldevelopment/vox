@@ -1,5 +1,5 @@
-import { compose } from "./compose";
-import { createEffect } from "../effects/createEffect";
+import { compose } from "./compose.js";
+import { createEffect } from "../effects/createEffect.js";
 
 export const watch = (dep, callback) => {
     let variable = dep;
