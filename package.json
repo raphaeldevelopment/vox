@@ -19,7 +19,6 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "publish": "npm run build && npm login && npm publish",
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
