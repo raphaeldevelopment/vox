@@ -1,7 +1,7 @@
 import path from "path";
 
 const common = {
-  mode: "development",
+  mode: 'production',
   entry: "./src/index.ts",
   cache: false,
   watchOptions: {
