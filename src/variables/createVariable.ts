@@ -2,13 +2,13 @@ import {Variable} from "./Variable";
 import {Callback} from "../callbacks/Callback";
 import {EffectsStack} from "../effects/EffectsStack";
 import {createEffect} from "../effects/createEffect";
+import { Unsubscribe, WatchCallback } from "./Variable.interface";
 
 export function createVariable<T>(initialValue: T, variables: Array<Variable<any>> = [], computedValue?: T): [Variable<any>, Callback] {
     const events: Set<Function> = new Set();
     let variableCleanup: Function | null = null;
 
-    /** @type {function(function(T, T): void): void} */
-    const addEvent = (event: Function): Function => {
+    const addEvent = (event: WatchCallback): Unsubscribe => {
         events.add(event);
 
         return () => {
