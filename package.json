@@ -1,10 +1,11 @@
 {
   "name": "vox-engine",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lightweight experimental reactive JavaScript library",
   "type": "module",
   "main": "./dist/vox.cjs",
   "module": "./dist/vox.esm.js",
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/vox.esm.js",
@@ -22,11 +23,10 @@
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
-    "types": "tsc -p tsconfig.json",
-    "build": "npm run test:run && npm run types && rm -rf dist && webpack",
-    "watch": "webpack --watch",
-    "watch:types": "tsc -p tsconfig.types.json --watch",
-    "watch:progress": "npx webpack --watch --progress"
+    "build": "npm run test:run && rm -rf dist && npm run build:types && webpack",
+    "watch:types": "npx tsc -p tsconfig.types.json --watch",
+    "watch": "npx webpack --watch --progress",
+    "build:types": "tsc -p tsconfig.types.json"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
