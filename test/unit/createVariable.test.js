@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createVariable } from "../../src/variables/createVariable.js";
+import { createVariable } from "../../src/variables/createVariable";
 import { nextFrame } from "../utils.js";
 
 

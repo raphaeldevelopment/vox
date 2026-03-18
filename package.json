@@ -18,15 +18,20 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "npm run test:run && rm -rf dist && webpack",
-    "build:dev": "npm run test:run && rm -rf dist && VOX_DEBUG=true npm run build",
     "publish": "npm run build && npm login && npm publish",
     "watch": "webpack --watch --mode development",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "types": "tsc -p tsconfig.json",
+    "build": "npm run test:run && npm run types && rm -rf dist && webpack",
+    "dev": "webpack --watch"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "jsdom": "^28.1.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.18",
     "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4"

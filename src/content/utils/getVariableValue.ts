@@ -1,0 +1,48 @@
+import { State } from "../../state/State";
+import { VariableRegistry } from "../../variables/VariableRegistry";
+import { ParseVariableKeyInterface } from "./ParseVariable.interface";
+
+export const getVariableValue = (root: State | VariableRegistry, keys: Array<ParseVariableKeyInterface>) => {
+    let value: any = root;
+    let variable: any = null;
+
+    try {
+        keys.forEach(key => {
+            if (key.type === "object") {
+                if (typeof value.get === "function") {
+                    value = value.get(key.index);
+                    variable = value;
+                } else if (typeof value[key.index] !== "undefined") {
+                    value = value[key.index];
+                } else {
+                    throw new Error("Object key does not exist")
+                }
+            }
+
+            if (key.type === "array") {
+                if (typeof value[key.index] !== "undefined") {
+                    value = value[key.index];
+                } else {
+                    throw new Error("Array is not valid")
+                }
+            }
+
+            if (value?.value) {
+                value = value.value;
+            }
+
+            if (value?.getValue) {
+                value = value.getValue();
+            }
+
+            if (variable?.value) {
+                variable = variable.value;
+            }
+        })
+    } catch (err) {
+        console.warn(`Error: ${JSON.stringify(keys)} - ${err}`);
+        return {variable: null, value: null, err: err};
+    }
+
+    return {variable, value};
+}

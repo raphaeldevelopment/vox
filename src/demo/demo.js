@@ -1,12 +1,5 @@
 // demo/demo.js
-import { createVariable } from "../variables/createVariable.js";
-import { compose } from "../variables/compose.js";
-import { createEffect } from "../effects/createEffect.js";
-import { voxMain } from "../content/voxMain.js";
-import { State } from "../state/State.js";
-import { VariableRegistry } from "../variables/VariableRegistry.js";
-import { CallbackRegistry } from "../callbacks/CallbackRegistry.js";
-import { voxDebug } from "../debug/voxDebug.js";
+import { createVariable, compose, createEffect, voxMain, State, VariableRegistry, CallbackRegistry } from "../../dist/vox.esm.js";
 
 const variableRegistry = VariableRegistry.getInstance();
 const callbackRegistry = CallbackRegistry.getInstance();
@@ -38,7 +31,7 @@ profileState.visits = state.get("profile", "visits").value + 1;
  * Variables
  * --------------------------- */
 const [count, setCount] = createVariable(0);
-const [name, setName] = createVariable("Vox User");
+const [name, setName] = createVariable("Vox User Test 3");
 const [nameObj, setNameObj] = createVariable(["Vox User", {name: ["Rafael", "Test"] } ]);
 const [name2, setName2] = createVariable("Optimus");
 const fullName = compose(() => count < 5 ? `${name}` : `${name2}`);
@@ -147,7 +140,6 @@ const removeLastTag = () => {
 };
 
 const debugApp = () => {
-  voxDebug();
   pushLog("voxDebug() called - check console");
 };
 

@@ -1,38 +1,63 @@
 import path from "path";
-import webpack from "webpack";
+
+const common = {
+  mode: "production",
+  entry: "./src/index.ts",
+  resolve: {
+    extensions: [".ts", ".js"]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "ts-loader",
+          options: {
+            transpileOnly: true
+          }
+        }
+      }
+    ]
+  }
+};
 
 export default [
-    {
-        name: "esm",
-        mode: "production",
-        entry: "./src/index.js",
-        output: {
-            path: path.resolve("dist"),
-            filename: "vox.esm.js",
-            library: {
-                type: "module"
-            },
-            clean: true
-        },
-        experiments: {
-            outputModule: true
-        },
-        plugins: [
-            new webpack.DefinePlugin({
-                __VOX_DEBUG__: JSON.stringify(process.env.VOX_DEBUG === "true")
-            })
-        ]
+  {
+    ...common,
+    output: {
+      path: path.resolve("dist"),
+      filename: "vox.esm.js",
+      library: {
+        type: "module"
+      },
+      module: true
     },
-    {
-        name: "cjs",
-        mode: "production",
-        entry: "./src/index.js",
-        output: {
-            path: path.resolve("dist"),
-            filename: "vox.cjs",
-            library: {
-                type: "commonjs2"
-            }
-        }
+    experiments: {
+      outputModule: true
     }
+  },
+
+  {
+    ...common,
+    output: {
+      path: path.resolve("dist"),
+      filename: "vox.cjs",
+      library: {
+        type: "commonjs2"
+      }
+    }
+  },
+
+  {
+    ...common,
+    output: {
+      path: path.resolve("dist"),
+      filename: "vox.min.js",
+      library: {
+        name: "Vox",
+        type: "umd"
+      }
+    }
+  }
 ];
