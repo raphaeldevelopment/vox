@@ -1,8 +1,13 @@
 import path from "path";
 
 const common = {
-  mode: "production",
+  mode: "development",
   entry: "./src/index.ts",
+  cache: false,
+  watchOptions: {
+    poll: 1000,
+    ignored: /node_modules/
+  },
   resolve: {
     extensions: [".ts", ".js"]
   },
@@ -14,7 +19,8 @@ const common = {
         use: {
           loader: "ts-loader",
           options: {
-            transpileOnly: true
+            transpileOnly: false,
+            configFile: "tsconfig.webpack.json"
           }
         }
       }
@@ -37,7 +43,6 @@ export default [
       outputModule: true
     }
   },
-
   {
     ...common,
     output: {
@@ -48,7 +53,6 @@ export default [
       }
     }
   },
-
   {
     ...common,
     output: {

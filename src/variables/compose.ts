@@ -10,7 +10,7 @@ export const compose = (formula: Function): Variable<any> => {
     let initialValue: any;
     let variable: Variable<any>;
     let setVariable: Callback;
-    let currentDeps: Set<Variable<any>>;
+    let currentDeps: Set<Variable<any>> | null = null;
 
     const callFunction = () => {
         try {

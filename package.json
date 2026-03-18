@@ -19,13 +19,14 @@
   "sideEffects": false,
   "scripts": {
     "publish": "npm run build && npm login && npm publish",
-    "watch": "webpack --watch --mode development",
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "tsc -p tsconfig.json",
     "build": "npm run test:run && npm run types && rm -rf dist && webpack",
-    "dev": "webpack --watch"
+    "watch": "webpack --watch",
+    "watch:types": "tsc -p tsconfig.types.json --watch",
+    "watch:progress": "npx webpack --watch --progress"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

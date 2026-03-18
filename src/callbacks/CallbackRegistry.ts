@@ -22,17 +22,11 @@ export class CallbackRegistry {
         CallbackRegistry.#instance = this;
     }
 
-    /**
-     * Add a new Callback to the registry
-     * @param {string} name
-     * @param {Callback} value
-     * @returns {void}
-     */
-    set(name: string, value: Callback, context = CONTEXT_MAIN) {
+    set(name: string, value: Function, context = CONTEXT_MAIN) {
         if (!this.#callbacks?.has(context)) {
             this.#callbacks?.set(context, new Map());
         }
-        this.#callbacks?.get(context)?.set(name, value);
+        this.#callbacks?.get(context)?.set(name, new Callback(value));
     }
 
     get(name: string, node: Element): Callback | null {

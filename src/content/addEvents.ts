@@ -30,8 +30,8 @@ export const addEvents = (parentNode = document.documentElement) => {
                 if (!callback) {
                     return;
                 }
-
-                node.addEventListener(eventName, callback.run)
+                
+                node.addEventListener(eventName, callback.run);
             }
         })
     })

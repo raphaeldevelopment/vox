@@ -7,10 +7,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "dist/types",
-    "allowJs": true,
-    "checkJs": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "generated", "src/demo"]
 }

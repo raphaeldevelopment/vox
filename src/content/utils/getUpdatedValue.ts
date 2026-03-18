@@ -27,7 +27,7 @@ export const getUpdatedValue = (root: State | VariableRegistry, keys: Array<Pars
             variable = variable.getValue();
         }
 
-        const value = structuredClone(variable);
+        let value = structuredClone(variable);
         let increment = value;
 
         while (index < keys.length - 1 && typeof increment[keys[index].index] === "object") { 
@@ -36,11 +36,15 @@ export const getUpdatedValue = (root: State | VariableRegistry, keys: Array<Pars
         }
 
         const lastKey = keys[index]?.index;
-        if (typeof lastKey === "undefined") {
-            throw new Error("Missing final key");
-        }
+        if (index < keys.length) {
+            if (typeof lastKey === "undefined") {
+                throw new Error("Missing final key");
+            }
 
-        increment[lastKey] = newValue;
+            increment[lastKey] = newValue;
+        } else {
+            value = newValue;
+        }
 
         return value;
     } catch (err) {
