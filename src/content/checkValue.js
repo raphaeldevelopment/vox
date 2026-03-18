@@ -8,6 +8,7 @@ import { ElementObserver } from "../dom/ElementObserver.js";
 import { parseVariableName } from "./utils/parseVariableName.js";
 import { getVariableValue } from "./utils/getVariableValue.js";
 import { getUpdatedValue } from "./utils/getUpdatedValue.js";
+import { InputField } from "../dom/InputField.js";
 
 /**
  * Initialize the value on an input element
@@ -20,6 +21,7 @@ export const checkValue = (parentNode = document) => {
     const variableNodes = parentNode.querySelectorAll(`[${VOX_ATTR_VALUE_SELECTOR}]`);
 
     variableNodes.forEach(node => {
+        const wrapper = InputField.create(node);
         const variableName = node.getAttribute(VOX_ATTR_VALUE_SELECTOR);
         const parsedVariableName = parseVariableName(variableName);
         const { isState, keys } = parsedVariableName;
@@ -37,8 +39,8 @@ export const checkValue = (parentNode = document) => {
         const logic = init => {
             try {
                 guard(init, cleanup);
-
-                node.value = `${value}`;                
+                wrapper.changeValue(value);
+                             
                 if (init) {     
                     cleanup = createEffect(() => {
                         value = getVariableValue(root, keys).value;
@@ -59,8 +61,8 @@ export const checkValue = (parentNode = document) => {
             return;
         }
         const callback = callbackRegistry.getStrict(keys[0].index, context);
-        node.addEventListener("input", (e) => {
-            const newValue = getUpdatedValue(root, keys, e.target.value);
+        wrapper.addChangeEvent((value) => {
+            const newValue = getUpdatedValue(root, keys, value);
             if (isState) {
                 return variable.setValue(newValue);
             }
