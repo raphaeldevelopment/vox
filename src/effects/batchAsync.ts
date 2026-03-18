@@ -1,6 +1,6 @@
 import { EffectsStack } from "./EffectsStack"
 
-export const batchAsync = async (callback: Function) => {
+export const batchAsync = async (callback: () => void) => {
     const effectsStack = EffectsStack.getInstance();
 
     try {

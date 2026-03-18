@@ -8,8 +8,6 @@ export class Callback {
 
         callable.setValue = this.setValue.bind(this);
         callable.run = this.run.bind(this);
-
-        return callable;
     }
 
     setValue(call: Function) {

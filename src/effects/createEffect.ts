@@ -4,7 +4,7 @@ import { Variable } from "../variables/Variable";
 const sameDeps = (a: Set<Variable<any>>, b: Set<Variable<any>>): boolean =>
     a.size === b.size && [...a].every(dep => b.has(dep));
 
-const getVariables = (variables: Array<Variable<any>>, callback: Function): Set<Variable<any>> => {
+const getVariables = (variables: ReadonlyArray<Variable<any>>, callback: Function): Set<Variable<any>> => {
     if (variables) {
         return new Set(variables);
     }
@@ -25,11 +25,10 @@ const getVariables = (variables: Array<Variable<any>>, callback: Function): Set<
     return callFunction();
 }
 
-const addDependencies = (deps: Set<Variable<any>>, callback: Function): Array<Function> => {   
-    const cleanupFns: Array<Function> = [];
+const addDependencies = (deps: Set<Variable<any>>, callback: () => void): Array<Function> => {   
+    const cleanupFns: Array<() => void> = [];
     
     [...deps].forEach(variable => {
-        /** @type {function(Function): void} */
         const addEvent = variable.getAddEvent();
 
         cleanupFns.push(addEvent(callback));
@@ -38,18 +37,18 @@ const addDependencies = (deps: Set<Variable<any>>, callback: Function): Array<Fu
     return cleanupFns;
 }
 
-export const createEffect = (callback: Function, variables: Array<Variable<any>>) => {
+export const createEffect = (callback: () => void, variables: ReadonlyArray<Variable<any>>) => {
     let cleanupFns: Array<Function> = [];
     let deps: Set<Variable<any>> = getVariables(variables, callback);
     let clearFunction = () => {};
 
     const callbackWrapper = variables ? 
         callback : 
-        (...args: Array<any>) => {
+        () => {
             const newDeps: Set<Variable<any>> = new Set();
             try {
                 Variable.setCollector(newDeps);
-                callback(...args);
+                callback();
             } finally {
                 Variable.setCollector(null);
 

@@ -1,2 +1,2 @@
-export type Event = Function;
-export type Unsubscribe = Function;
+export type WatchCallback<T = unknown> = (value: T, previousValue?: T) => void;
+export type Unsubscribe = () => void;

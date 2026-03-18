@@ -1,8 +1,9 @@
 import { compose } from "./compose";
 import { createEffect } from "../effects/createEffect";
 import { Variable } from "./Variable";
+import { WatchCallback, WatchSource } from "./watch.interface";
 
-export const watch = (dep: Variable<any> | Function, callback: Function) => {
+export function watch<T>(dep: WatchSource<T>, callback: WatchCallback<T>) {
     let variable: Variable<any>;
     if (typeof dep === "function") {
         variable = compose(dep);
@@ -14,5 +15,5 @@ export const watch = (dep: Variable<any> | Function, callback: Function) => {
         return;
     }
 
-    return createEffect(callback, [variable]);
+    return createEffect(callback as () => T, [variable]);
 }

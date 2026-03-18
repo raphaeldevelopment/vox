@@ -1,12 +1,12 @@
-import { Event, Unsubscribe } from "./Variable.interface";
+import { WatchCallback, Unsubscribe } from "./Variable.interface";
 
 export class Variable<T> {
     static collector: Set<Variable<any>> | null;
     /** @type {T} */
     #value: T;
-    #addEvent: (event: Event) => Unsubscribe;
+    #addEvent: (event: WatchCallback) => Unsubscribe;
     
-    constructor(value: T, addEvent: (event: Event) => Unsubscribe) {
+    constructor(value: T, addEvent: (event: WatchCallback) => Unsubscribe) {
         this.#value = value;
         this.#addEvent = addEvent;
     }
@@ -22,7 +22,7 @@ export class Variable<T> {
      * Get the add event function
      * @returns {function(function(...*): void): void} 
      */
-    getAddEvent(): (event: Event) => Unsubscribe {
+    getAddEvent(): (event: WatchCallback) => Unsubscribe {
         return this.#addEvent;
     }
 

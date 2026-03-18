@@ -1,11 +1,12 @@
 import { Callback } from "../callbacks/Callback";
 import { Variable } from "./Variable";
 import { createVariable } from "./createVariable";
+import { Formula } from "./compose.interface";
 
 const sameDeps = (a: Set<Variable<any>>, b: Set<Variable<any>>): boolean =>
     a.size === b.size && [...a].every(dep => b.has(dep));
 
-export const compose = (formula: Function): Variable<any> => {
+export function compose<T>(formula: Formula<T>): Variable<T> {
     let deps: Set<Variable<any>> = new Set();
     let initialValue: any;
     let variable: Variable<any>;
