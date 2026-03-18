@@ -4,6 +4,34 @@ All notable changes to Vox will be documented in this file.
 
 The format follows Keep a Changelog principles and semantic versioning.
 
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+---
+
+## [0.3.1] - 2026-03-18
+
+### Fixed
+- Fixed edge cases where effects could execute multiple times during the same flush cycle.
+- Fixed scheduler timing inconsistencies when batching updates across animation frames.
+- Fixed incorrect dependency tracking when reactive values were mutated inside nested effects.
+
+### Improved
+- Improved batching performance for large numbers of reactive updates.
+- Reduced unnecessary effect executions during DOM updates.
+- Improved internal scheduler stability for frame-based flush cycles.
+- Added Typescript
+
+### Added
+- Added additional unit tests for reactivity edge cases and effect cleanup behavior.
+- Expanded DOM test coverage for directive updates.
+
+### Internal
+- Refactored reactivity core for clearer dependency tracking.
+- Minor runtime size optimizations.
+- Improved test infrastructure and CI configuration.
+
 ---
 
 # [0.3.0] - 2026-03-17
