@@ -58,6 +58,7 @@ variableRegistry.set("doubleCount", doubleCount);
 
 // vox-value expects the same key to exist in CallbackRegistry
 callbackRegistry.set("name", setName);
+callbackRegistry.set("tags", setTags);
 callbackRegistry.set("name", setName2, "hardcoded");
 
 /* ---------------------------
@@ -124,6 +125,7 @@ const resetVisits = () => {
 
 const addTag = () => {
   const next = [...tags.getValue(), `tag-${tags.getValue().length + 1}`];
+
   setTags(next);
 };
 

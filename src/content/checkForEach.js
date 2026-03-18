@@ -108,11 +108,14 @@ export const checkForEach = (voxRestart) => {
                     }
                 }  
 
+
                 if (init) {     
+                        console.log(variable);
                     cleanup = createEffect(() => {
+                        console.log(variable);
                         logic(false);
                     }, [variable]);
-                    elementObserver.addElement(node, cleanup);
+                    elementObserver.addElement(container, cleanup);
                 }
             } catch (err) {
                 cleanup();
