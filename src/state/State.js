@@ -40,6 +40,10 @@ class StateLeaf {
     set value(nextValue) {
         this.#setValue(nextValue);
     }
+
+    setValue(nextValue) {
+        this.#setValue(nextValue);
+    }
 }
 
 class StateNode {

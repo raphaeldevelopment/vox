@@ -45,7 +45,17 @@
             type="text"
             placeholder="Type your name..."
             vox-value="name"
-          />
+          /> 
+            <input
+                type="text"
+                placeholder="Type your name in obj..."
+                vox-value="nameObj.[1].name.[0]"
+            />
+            <input
+                type="text"
+                placeholder="Type your name in obj state..."
+                vox-value="profile->nameObj->prime->nameObj3->[1]->name->[0]"
+            />
           <div vox-context="hardcoded">  
             <input
                 type="text"

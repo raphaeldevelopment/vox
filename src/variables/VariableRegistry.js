@@ -42,7 +42,7 @@ export class VariableRegistry {
         const context = contexts.find(cont => this.#variables.has(cont) && this.#variables.get(cont).has(name));
 
         if (context === undefined) {
-            return null;
+            return CONTEXT_MAIN;
         }
 
         return context;

@@ -27,6 +27,10 @@ if (!state.has("profile", "visits")) {
   state.addVariable(0, "profile", "visits");
 }
 
+state.create("profile", "nameObj");
+state.create("profile", "nameObj", "prime");
+state.addVariable(["T1", {name: ["T2", "T3"]} ], "profile", "nameObj", "prime", "nameObj3");
+console.log(state);
 const profileState = state.get("profile");
 profileState.visits = state.get("profile", "visits").value + 1;
 
@@ -35,6 +39,7 @@ profileState.visits = state.get("profile", "visits").value + 1;
  * --------------------------- */
 const [count, setCount] = createVariable(0);
 const [name, setName] = createVariable("Vox User");
+const [nameObj, setNameObj] = createVariable(["Vox User", {name: ["Rafael", "Test"] } ]);
 const [name2, setName2] = createVariable("Optimus");
 const fullName = compose(() => count < 5 ? `${name}` : `${name2}`);
 
@@ -50,6 +55,7 @@ const [doubleCount] = createVariable(() => count.getValue() * 2, [count]);
  * --------------------------- */
 variableRegistry.set("count", count);
 variableRegistry.set("name", name);
+variableRegistry.set("nameObj", nameObj);
 variableRegistry.set("name", name2, "hardcoded");
 variableRegistry.set("showDetails", showDetails);
 variableRegistry.set("themeName", themeName);
@@ -58,6 +64,7 @@ variableRegistry.set("doubleCount", doubleCount);
 
 // vox-value expects the same key to exist in CallbackRegistry
 callbackRegistry.set("name", setName);
+callbackRegistry.set("nameObj", setNameObj);
 callbackRegistry.set("tags", setTags);
 callbackRegistry.set("name", setName2, "hardcoded");
 
@@ -74,6 +81,10 @@ const pushLog = (message) => {
 };
 
 pushLog("Demo booted");
+
+createEffect(() => {
+    pushLog(`nameObj changed to ${JSON.stringify(nameObj.getValue())}`);
+}, [nameObj]);
 
 createEffect(() => {
   pushLog(`count changed to ${count.getValue()}`);

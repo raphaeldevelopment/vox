@@ -110,9 +110,7 @@ export const checkForEach = (voxRestart) => {
 
 
                 if (init) {     
-                        console.log(variable);
                     cleanup = createEffect(() => {
-                        console.log(variable);
                         logic(false);
                     }, [variable]);
                     elementObserver.addElement(container, cleanup);
