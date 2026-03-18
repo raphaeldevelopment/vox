@@ -1,5 +1,6 @@
 import { Callback } from "../callbacks/Callback";
 import { Variable } from "../variables/Variable";
+import { Cleanup, EffectCallback } from "./createEffect.interface";
 
 const sameDeps = (a: Set<Variable<any>>, b: Set<Variable<any>>): boolean =>
     a.size === b.size && [...a].every(dep => b.has(dep));
@@ -25,8 +26,8 @@ const getVariables = (variables: ReadonlyArray<Variable<any>>, callback: Functio
     return callFunction();
 }
 
-const addDependencies = (deps: Set<Variable<any>>, callback: () => void): Array<Function> => {   
-    const cleanupFns: Array<() => void> = [];
+const addDependencies = (deps: Set<Variable<any>>, callback: () => void): Array<Cleanup> => {   
+    const cleanupFns: Array<Cleanup> = [];
     
     [...deps].forEach(variable => {
         const addEvent = variable.getAddEvent();
@@ -37,8 +38,8 @@ const addDependencies = (deps: Set<Variable<any>>, callback: () => void): Array<
     return cleanupFns;
 }
 
-export const createEffect = (callback: () => void, variables: ReadonlyArray<Variable<any>>) => {
-    let cleanupFns: Array<Function> = [];
+export const createEffect = (callback: EffectCallback, variables: ReadonlyArray<Variable<any>>) => {
+    let cleanupFns: Array<Cleanup> = [];
     let deps: Set<Variable<any>> = getVariables(variables, callback);
     let clearFunction = () => {};
 

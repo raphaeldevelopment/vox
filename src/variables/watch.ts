@@ -1,19 +1,28 @@
 import { compose } from "./compose";
 import { createEffect } from "../effects/createEffect";
 import { Variable } from "./Variable";
-import { WatchCallback, WatchSource } from "./watch.interface";
+import { WatchSource } from "./watch.interface";
+import { WatchCallback } from "./Variable.interface";
 
 export function watch<T>(dep: WatchSource<T>, callback: WatchCallback<T>) {
-    let variable: Variable<any>;
-    if (typeof dep === "function") {
-        variable = compose(dep);
-    } else {
-        variable = dep;
+  const variable: Variable<T> =
+    typeof dep === "function" ? compose(dep) : dep;
+
+  if (!variable) {
+    return () => {};
+  }
+
+  let previousValue: T | undefined = undefined;
+  let initialized = false;
+
+  return createEffect(() => {
+    const value = variable.getValue();
+
+    if (initialized) {
+      callback(value, previousValue);
     }
 
-    if (!variable) {
-        return;
-    }
-
-    return createEffect(callback as () => T, [variable]);
+    previousValue = value;
+    initialized = true;
+  }, [variable]);
 }
