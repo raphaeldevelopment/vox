@@ -9,3 +9,4 @@ export { VariableRegistry } from "./variables/VariableRegistry";
 export { CallbackRegistry } from "./callbacks/CallbackRegistry";
 export { batch } from "./effects/batch";
 export { batchAsync } from "./effects/batchAsync";
+export { DirectiveRegistry } from "./directive/DirectiveRegistry";

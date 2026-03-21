@@ -1,4 +1,3 @@
-import { Callback } from "../callbacks/Callback";
 import { Variable } from "./Variable";
 import { createVariable } from "./createVariable";
 import { Formula } from "./compose.interface";
@@ -10,7 +9,7 @@ export function compose<T>(formula: Formula<T>): Variable<T> {
     let deps: Set<Variable<any>> = new Set();
     let initialValue: any;
     let variable: Variable<any>;
-    let setVariable: Callback;
+    let setVariable: Function;
     let currentDeps: Set<Variable<any>> | null = null;
 
     const callFunction = () => {
@@ -24,7 +23,7 @@ export function compose<T>(formula: Formula<T>): Variable<T> {
             if (currentDeps === null) {
                 currentDeps = deps;
             } else if (setVariable && !sameDeps(currentDeps, deps)) {
-                setVariable.run(callFunction, [...deps], initialValue);
+                setVariable(callFunction, [...deps], initialValue);
                 currentDeps = deps;
             }
         }

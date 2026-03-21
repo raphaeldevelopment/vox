@@ -1,10 +1,9 @@
 import {Variable} from "./Variable";
-import {Callback} from "../callbacks/Callback";
 import {EffectsStack} from "../effects/EffectsStack";
 import {createEffect} from "../effects/createEffect";
 import { Unsubscribe, WatchCallback } from "./Variable.interface";
 
-export function createVariable<T>(initialValue: T, variables: Array<Variable<any>> = [], computedValue?: T): [Variable<any>, Callback] {
+export function createVariable<T>(initialValue: T, variables: Array<Variable<any>> = [], computedValue?: T): [Variable<any>, Function] {
     const events: Set<Function> = new Set();
     let variableCleanup: Function | null = null;
 
@@ -77,5 +76,5 @@ export function createVariable<T>(initialValue: T, variables: Array<Variable<any
     };
 
 
-    return [variable, new Callback(setVariable)];
+    return [variable, setVariable];
 }

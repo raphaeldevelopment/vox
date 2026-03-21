@@ -1,5 +1,4 @@
 import { VariableContext, CONTEXT_MAIN } from "../dom/VariableContext";
-import { Callback } from "./Callback";
 import { ContextCallbacks } from "./CallbackRegistry.interface";
 
 
@@ -12,10 +11,6 @@ export class CallbackRegistry {
         if (CallbackRegistry.#instance) {
             return CallbackRegistry.#instance;
         }
-        /**
-         * @private
-         * @type {Map<string, Callback>}
-         */
         this.#callbacks = new Map();
         this.#variableContext = VariableContext.getInstance();
 
@@ -26,10 +21,10 @@ export class CallbackRegistry {
         if (!this.#callbacks?.has(context)) {
             this.#callbacks?.set(context, new Map());
         }
-        this.#callbacks?.get(context)?.set(name, new Callback(value));
+        this.#callbacks?.get(context)?.set(name, value);
     }
 
-    get(name: string, node: Element): Callback | null {
+    get(name: string, node: Element): Function | null {
         const contexts = this.#variableContext?.getContext(node);
         if (!contexts) {
             return null;
@@ -45,7 +40,7 @@ export class CallbackRegistry {
         return this.#callbacks?.get(context)?.get(name) || null;
     }
 
-    getStrict(name: string, context = CONTEXT_MAIN): Callback | null {
+    getStrict(name: string, context = CONTEXT_MAIN): Function | null {
         if (!this.hasStrict(name, context)) {
             return null;
         }

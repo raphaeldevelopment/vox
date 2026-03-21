@@ -2,7 +2,6 @@ import { createVariable } from "../variables/createVariable";
 import { createEffect } from "../effects/createEffect";
 import { EffectsStack } from "../effects/EffectsStack";
 import { Variable } from "../variables/Variable";
-import { Callback } from "../callbacks/Callback";
 
 class FakeStorage {
     store: Record<string, string>
@@ -31,7 +30,7 @@ class StateLeaf<T> {
     #variable;
     #setValue;
 
-    constructor(variable: Variable<any>, setValue: Callback) {
+    constructor(variable: Variable<any>, setValue: Function) {
         this.#variable = variable;
         this.#setValue = setValue;
     }
@@ -41,11 +40,11 @@ class StateLeaf<T> {
     }
 
     set value(nextValue) {
-        this.#setValue.run(nextValue);
+        this.#setValue(nextValue);
     }
 
     setValue(nextValue: T) {
-        this.#setValue.run(nextValue);
+        this.#setValue(nextValue);
     }
 }
 

@@ -1,3 +1,1 @@
-import { Callback } from "./Callback";
-
-export type ContextCallbacks = Map<string, Callback>;
+export type ContextCallbacks = Map<string, Function>;

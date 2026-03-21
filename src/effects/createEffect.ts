@@ -1,4 +1,3 @@
-import { Callback } from "../callbacks/Callback";
 import { Variable } from "../variables/Variable";
 import { Cleanup, EffectCallback } from "./createEffect.interface";
 

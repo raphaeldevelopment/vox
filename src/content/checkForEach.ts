@@ -1,9 +1,7 @@
 import { createEffect } from "../effects/createEffect";
-import { VariableRegistry } from "../variables/VariableRegistry";
 import { VOX_ATTR_FOR_EACH_SELECTOR } from "./consts";
-import { guardNode } from "../utils/guardNode";
-import { ElementObserver } from "../dom/ElementObserver";
 import { Variable } from "../variables/Variable";
+import { Directive } from "../directive/directive.interface";
 
 const parseRule = (rule: string) => {
     const parts = rule.split (" in ");
@@ -72,59 +70,57 @@ const undoReplaceWith = (node: HTMLElement, nodes: Array<HTMLElement>) => {
         nodes[i].remove();
     }
 }
-/**
- * Initialize the for each element in DOM
- */
-export const checkForEach = (voxRestart: Function) => {
-    const variableRegistry = VariableRegistry.getInstance();
-    const variableNodes = document.querySelectorAll(`[${VOX_ATTR_FOR_EACH_SELECTOR}]`);
-    const elementObserver = ElementObserver.getInstance();
 
-    variableNodes.forEach(node => {
-        const rule = node.getAttribute(VOX_ATTR_FOR_EACH_SELECTOR);
-        const parsedRule = parseRule(rule || "");
-        const container = node.parentNode?.parentElement;
-        const { variableName} = parsedRule;
-        let cleanup = () => {};
+export const checkForEachLogic: Directive = opts => {
+    const {
+        variableRegistry,
+        elementObserver,
+        guard,
+        value,
+        voxRestart,
+        node
+    } = opts;
 
-        if (!variableRegistry.has(variableName, node)) {
-            return;
-        }
-        const guard = (init: boolean, cleanup: Function) => guardNode(container as HTMLElement, `voxForEachSet`, variableName, init, cleanup);        
-        const variable = variableRegistry.get(variableName, node);
-        let nodes: Array<HTMLElement> | null = null;
-        const cache: Map<string, HTMLElement> = new Map();
+    const parsedRule = parseRule(value || "");
+    const container = node.parentNode?.parentElement;
+    const { variableName} = parsedRule;
+    let cleanup = () => {};
 
-        const logic = (init: boolean) => {
-            try {
-                guard(init, cleanup);    
-                if (!init && nodes) {                    
-                    undoReplaceWith(node as HTMLElement, nodes);
-                }            
-                if (variable) {
-                    nodes = replaceWith(node as HTMLElement, variable, cache);
-                }
-                
-                if (!init) { 
-                    if (nodes && nodes.length > 0) {
-                        voxRestart(nodes[0].parentElement)
-                    }
-                }  
+    if (!variableRegistry.has(variableName, node)) {
+        return;
+    }     
+    const variable = variableRegistry.get(variableName, node);
+    let nodes: Array<HTMLElement> | null = null;
+    const cache: Map<string, HTMLElement> = new Map();
 
-
-                if (init) {     
-                    cleanup = createEffect(() => {
-                        logic(false);
-                    }, [variable as Variable<any>]);
-                    elementObserver.addElement(container as HTMLElement, cleanup);
-                }
-            } catch (err) {
-                cleanup();
-                console.warn(err);
+    const logic = (init: boolean) => {
+        try {
+            guard(container as HTMLElement, init, cleanup);    
+            if (!init && nodes) {                    
+                undoReplaceWith(node as HTMLElement, nodes);
+            }            
+            if (variable) {
+                nodes = replaceWith(node as HTMLElement, variable, cache);
             }
+            
+            if (!init) { 
+                if (nodes && nodes.length > 0) {
+                    voxRestart(container as HTMLElement)
+                }
+            }  
+
+
+            if (init) {     
+                cleanup = createEffect(() => {
+                    logic(false);
+                }, [variable as Variable<any>]);
+                elementObserver.addElement(container as HTMLElement, cleanup);
+            }
+        } catch (err) {
+            cleanup();
+            console.warn(err);
         }
+    }
 
-        logic(true);
-    })
-
+    logic(true);
 }

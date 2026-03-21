@@ -1,8 +1,8 @@
+import { Directive } from "../directive/directive.interface";
 import { VariableContext } from "../dom/VariableContext";
 
-export const checkContexts = () => {    
+export const checkContextsLogic: Directive = ({node}) => {    
     const variableContext = VariableContext.getInstance();
 
-    [...document.querySelectorAll('[vox-context]')]
-        .forEach(element => variableContext.addContext(element));
+    variableContext.addContext(node);
 }
