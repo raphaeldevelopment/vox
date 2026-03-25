@@ -28,6 +28,7 @@ It avoids virtual DOM, components, and compilation steps in favor of **direct re
 * Event bindings
 * Persistent state
 * Tiny runtime
+* Can be easily extended with directives
 
 ---
 
@@ -274,6 +275,41 @@ state.addVariable("user", "name", "Ana");
 
 console.log(state.get("user", "name"));
 ```
+---
+# Extensibility
+
+Vox can be extended via its directive system.
+
+Possible extensions include:
+
+- custom event handlers
+- DOM transformations
+- reusable behavior patterns
+
+```js
+const directiveRegistry = DirectiveRegistry.getInstance();
+
+directiveRegistry.set({
+    name: directiveName, 
+    // Unique identifier for the directive (internal use).
+    // Should NOT start with "vox" (reserved for core directives).
+
+    key: attrName, 
+    // The DOM attribute name this directive listens to.
+    // Example: "vox-if", "vox-for", "vox-model"
+
+    selector: selector, 
+    // Defines which elements this directive applies to.
+    // Can be:
+    // - a CSS selector string (e.g. "[vox-if]")
+    // - a function that returns a list of matching elements
+
+    logic: checkForEachLogic 
+    // The function executed for each matched element.
+    // Receives the element and directive value,
+    // and contains the actual behavior (DOM updates, reactivity, etc.)
+});
+```
 
 ---
 
@@ -288,6 +324,20 @@ import {
 ```
 
 These are intended for advanced usage and internal experimentation.
+
+---
+
+# Instalation
+
+```bash
+npm install vox-engine
+```
+
+or
+
+```bash
+pnpm add vox-engine
+```
 
 ---
 
@@ -315,23 +365,14 @@ npm test
 
 # Project Status
 
-Vox is experimental.
+Vox is now **API-stable**.
 
-The architecture is still evolving and APIs may change while the reactive core stabilizes.
+* The core API is considered final and will not change in breaking ways
+* Future updates will focus on stability, bug fixes, and improvements
+* Any breaking changes will require a major version bump
 
-Current focus:
+Vox is ready for real-world usage in its intended scope.
 
-* reactive consistency
-* directive system expansion
-* stronger tests
-* API stabilization
-
----
-## Public API Contract
-
-See full API guarantees and behavioral contracts in:
-
-[docs/api-contract.md](./docs/api-contract.md)
 
 ---
 ## Changelog
